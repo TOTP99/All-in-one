@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>观音光晕页面</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  animation: fadeIn 2.5s ease;
+}
+
+/* 页面淡入 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 进入页面莲花绽放 */
+#lotusBloom {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  height: 200px;
+  transform: translate(-50%, -50%) scale(0.1);
+  opacity: 0;
+  animation: lotusBloomAnim 3s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes lotusBloomAnim {
+  0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0; }
+  40% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(2.0); opacity: 0; }
+}
+
+/* 整页背景莲花旋转 */
+#lotusBg {
+  position: fixed;
+  width: 900px;
+  height: 900px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.08;
+  animation: lotusRotate 60s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes lotusRotate {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.center-container {
+  width: 360px;
+  height: 640px;
+  border-radius: 16px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
+  animation: breathe 6s ease-in-out infinite;
+}
+
+/* 呼吸光 */
+@keyframes breathe {
+  0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+  50% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.7); }
+}
+
+.guanyin-wrapper {
+  position: relative;
+  width: 100%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #222 0%, #000 70%);
+}
+
+/* 曼陀罗旋转 */
+#mandala {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  opacity: 0.25;
+  animation: mandalaRotate 40s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes mandalaRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 粒子光点 */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 215, 0, 0.9);
+  border-radius: 50%;
+  filter: blur(4px);
+  animation: floatParticle 6s linear infinite;
+}
+
+@keyframes floatParticle {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-120px) scale(0.3); opacity: 0; }
+}
+
+/* 随机光晕 */
+.halo {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,200,0.8) 0%, rgba(255,255,200,0) 60%);
+  filter: blur(12px);
+  opacity: 0.7;
+  transition: all 1.2s ease-out;
+  pointer-events: none;
+}
+
+/* 观音漂浮 */
+.guanyin-img {
+  position: relative;
+  width: 260px;
+  height: auto;
+  z-index: 2;
+  border-radius: 12px;
+  object-fit: contain;
+  box-shadow: 0 0 24px rgba(255,255,255,0.6);
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.symbols-area {
+  width: 100%;
+  height: 40%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px 8px 20px;
+  gap: 8px;
+}
+
+a { text-decoration: none; }
+
+/* 卍字旋转 */
+.symbol-block {
+  position: relative;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffd700;
+  font-size: 40px;
+  text-shadow:
+    0 0 8px rgba(255,215,0,0.9),
+    0 0 16px rgba(255,215,0,0.7),
+    0 0 24px rgba(255,215,0,0.5);
+  cursor: pointer;
+  transition: transform 0.25s ease;
+  animation: spinPulse 4s linear infinite;
+}
+
+@keyframes spinPulse {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.1); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+/* 点击波纹扩散 */
+.symbol-block:active::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: gold;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+  from { width: 10px; height: 10px; opacity: 1; }
+  to { width: 120px; height: 120px; opacity: 0; }
+}
+
+.symbol-block:hover { transform: scale(1.2); }
+
+.symbol-block::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,215,0,0.7) 0%, rgba(255,215,0,0) 70%);
+  filter: blur(6px);
+  z-index: -1;
+}
+
+.symbol-char {
+  position: absolute;
+  font-size: 40px;
+}
+
+.symbol-emoji {
+  position: absolute;
+  font-size: 22px;
+}
+
+/* 右上角音乐按钮 */
+#musicBtn {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255,215,0,0.4);
+  box-shadow: 0 0 12px gold;
+  cursor: pointer;
+  z-index: 999;
+  transition: transform 0.3s ease;
+}
+
+#musicBtn:hover {
+  transform: scale(1.2);
+}
+</style>
+</head>
+<body>
+
+<!-- 进入页面莲花绽放 -->
+<img id="lotusBloom" src="./lotus.png">
+
+<!-- 整页背景莲花旋转 -->
+<img id="lotusBg" src="./lotus.png">
+
+<!-- 背景佛音 -->
+<audio id="bgm" autoplay loop>
+  <source src="./lian.mp3" type="audio/mpeg">
+</audio>
+
+<!-- 音乐开关按钮 -->
+<div id="musicBtn"></div>
+
+<div class="center-container">
+
+  <div class="guanyin-wrapper">
+
+    <!-- 曼陀罗旋转 -->
+    <img id="mandala" src="./mandala.png">
+
+    <div class="halo" id="halo"></div>
+
+    <!-- 粒子生成 -->
+    <script>
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        p.style.left = (Math.random() * 260 + 50) + "px";
+        p.style.top = (Math.random() * 260 + 20) + "px";
+        p.style.animationDelay = (Math.random() * 5) + "s";
+        document.body.appendChild(p);
+      }
+    </script>
+
+    <!-- 观音像 -->
+    <img class="guanyin-img" src="./Guan-Yin.jpg" alt="观音像" />
+  </div>
+
+  <div class="symbols-area">
+
+    <a href="https://totp99.github.io/Mahjong/" target="_blank">
+      <div class="symbol-block">
+        <span class="symbol-char">卍</span>
+        <span class="symbol-emoji">🎲</span>
+      </div>
+    </a>
+
+    <a href="https://totp99.github.io/Piano/" target="_blank">
+      <div class="symbol-block">
+        <span class="symbol-char">卍</span>
+        <span class="symbol-emoji">🎹</span>
+      </div>
+    </a>
+
+    <a href="https://totp99.github.io/Slot/" target="_blank">
+      <div class="symbol-block">
+        <span class="symbol-char">卍</span>
+        <span class="symbol-emoji">🎰</span>
+      </div>
+    </a>
+
+    <a href="https://totp99.github.io/ZJiao/" target="_blank">
+      <div class="symbol-block">
+        <span class="symbol-char">卍</span>
+        <span class="symbol-emoji">🔮</span>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<script>
+const halo = document.getElementById("halo");
+const bgm = document.getElementById("bgm");
+const musicBtn = document.getElementById("musicBtn");
+
+/* 随机光晕 */
+function randomHalo() {
+  const size = 200 + Math.random() * 120;
+  const offsetX = (Math.random() - 0.5) * 40;
+  const offsetY = (Math.random() - 0.5) * 40;
+  const opacity = 0.4 + Math.random() * 0.6;
+
+  halo.style.width = size + "px";
+  halo.style.height = size + "px";
+  halo.style.opacity = opacity.toString();
+  halo.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+}
+
+randomHalo();
+setInterval(randomHalo, 1500);
+
+/* 音乐按钮开关 */
+musicBtn.addEventListener("click", () => {
+  if (bgm.paused) bgm.play();
+  else bgm.pause();
+});
+</script>
+
+</body>
+</html>
