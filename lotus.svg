@@ -1,0 +1,33 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <!-- 主莲花轮廓 -->
+  <path d="
+    M150 40
+    C130 80, 110 120, 150 160
+    C190 120, 170 80, 150 40
+    Z
+  " stroke="white" stroke-width="3" fill="none"/>
+
+  <!-- 左侧花瓣 -->
+  <path d="
+    M150 160
+    C110 150, 80 180, 100 210
+    C120 240, 150 220, 150 200
+  " stroke="white" stroke-width="3" fill="none"/>
+
+  <!-- 右侧花瓣 -->
+  <path d="
+    M150 160
+    C190 150, 220 180, 200 210
+    C180 240, 150 220, 150 200
+  " stroke="white" stroke-width="3" fill="none"/>
+
+  <!-- 下方花瓣 -->
+  <path d="
+    M150 200
+    C130 220, 130 250, 150 260
+    C170 250, 170 220, 150 200
+  " stroke="white" stroke-width="3" fill="none"/>
+
+</svg>
