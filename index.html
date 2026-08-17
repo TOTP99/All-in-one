@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>观音新设计</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  overflow: hidden;
+}
+
+/* 整体容器：竖屏占高度80%，横屏占宽度80% */
+.main-wrapper {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 背景莲花：竖屏一朵，横屏三朵交叉 */
+.lotus-bg {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.lotus-bg img {
+  width: 95vh;
+  height: auto;
+  animation: lotusSlow 60s linear infinite;
+}
+
+@keyframes lotusSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 横屏时三朵莲花 */
+@media (orientation: landscape) {
+  .lotus-bg {
+    display: flex;
+    gap: 10vw;
+  }
+  .lotus-bg img {
+    width: 30vw;
+    height: auto;
+  }
+}
+
+/* 星光粒子 */
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: radial-gradient(circle, #fff 0%, transparent 70%);
+  opacity: 0;
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* 观音区域：占58%高度 */
+.guanyin-area {
+  flex: 0 0 58%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* 观音浮动 + 光晕 */
+#guanyin {
+  height: 100%;
+  max-height: 100%;
+  animation: float 6s ease-in-out infinite, glow 5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(255,215,0,0.4)); }
+  50% { filter: drop-shadow(0 0 25px rgba(255,215,0,0.9)); }
+}
+
+/* 曼陀罗区域：占16%高度 */
+.mandala-area {
+  flex: 0 0 16%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#mandala {
+  height: 100%;
+  max-height: 100%;
+  cursor: pointer;
+  animation: mandalaRotate 40s linear infinite;
+}
+
+@keyframes mandalaRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 按键区域：占8%高度 */
+.buttons-area {
+  flex: 0 0 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3vw;
+}
+
+/* 金色圆环按钮 */
+.btn-ring {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid #ffd700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffd700;
+  font-size: 26px;
+  cursor: pointer;
+  animation: ringRotate 12s linear infinite;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+@keyframes ringRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.btn-ring.glow {
+  transform: scale(1.18);
+  box-shadow: 0 0 18px rgba(255,215,0,0.9);
+}
+
+/* 链接本身不带默认样式 */
+.buttons-area a {
+  text-decoration: none;
+}
+
+/* 自适应：竖屏时整体稍微窄一点 */
+@media (orientation: portrait) {
+  .main-wrapper {
+    width: 80vw;
+    height: 80vh;
+  }
+}
+
+/* 横屏时：高度按宽度80%来算，仍居中 */
+@media (orientation: landscape) {
+  .main-wrapper {
+    width: 80vw;
+    height: 80vh;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 背景莲花 -->
+<div class="lotus-bg">
+  <img src="./lotus.svg" alt="莲花背景">
+</div>
+
+<!-- 背景音乐 -->
+<audio id="bgm" autoplay loop>
+  <source src="./lian.mp3" type="audio/mpeg">
+</audio>
+
+<!-- 主画面 -->
+<div class="main-wrapper">
+
+  <!-- 观音 -->
+  <div class="guanyin-area">
+    <img id="guanyin" src="./guanyin.svg" alt="观音">
+  </div>
+
+  <!-- 曼陀罗（音乐开关） -->
+  <div class="mandala-area">
+    <img id="mandala" src="./mandala.svg" alt="曼陀罗">
+  </div>
+
+  <!-- 四个按钮 -->
+  <div class="buttons-area">
+    <a href="https://totp99.github.io/Mahjong/" target="_blank">
+      <div class="btn-ring" data-link="mahjong">🀄️</div>
+    </a>
+    <a href="https://totp99.github.io/Piano/" target="_blank">
+      <div class="btn-ring" data-link="piano">🎹</div>
+    </a>
+    <a href="https://totp99.github.io/Slot/" target="_blank">
+      <div class="btn-ring" data-link="slot">🪎</div>
+    </a>
+    <a href="https://totp99.github.io/ZJiao/" target="_blank">
+      <div class="btn-ring" data-link="zjiao">🔮</div>
+    </a>
+  </div>
+
+</div>
+
+<script>
+const bgm = document.getElementById('bgm');
+const mandala = document.getElementById('mandala');
+const buttons = document.querySelectorAll('.btn-ring');
+
+/* 星光随机生成 */
+for (let i = 0; i < 60; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.left = Math.random() * 100 + 'vw';
+  s.style.top = Math.random() * 100 + 'vh';
+  s.style.animationDelay = (Math.random() * 4) + 's';
+  document.body.appendChild(s);
+}
+
+/* 曼陀罗点击：音乐开关 + 停止旋转动画 */
+let musicOn = true;
+mandala.addEventListener('click', () => {
+  if (musicOn) {
+    bgm.pause();
+    mandala.style.animationPlayState = 'paused';
+  } else {
+    bgm.play();
+    mandala.style.animationPlayState = 'running';
+  }
+  musicOn = !musicOn;
+});
+
+/* 按钮点击：先停止旋转 + 放大 + 光晕，再进入链接 */
+buttons.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault(); // 先阻止默认跳转
+    // 停止自身旋转动画
+    btn.style.animationPlayState = 'paused';
+    // 放大 + 光晕
+    btn.classList.add('glow');
+    // 停止背景音乐，避免影响新程序
+    bgm.pause();
+    musicOn = false;
+    mandala.style.animationPlayState = 'paused';
+
+    // 300ms 后再真正跳转
+    const parentLink = btn.parentElement;
+    setTimeout(() => {
+      window.open(parentLink.href, '_blank');
+    }, 300);
+  });
+});
+</script>
+
+</body>
+</html>
