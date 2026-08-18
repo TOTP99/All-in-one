@@ -163,13 +163,15 @@
           42.55vh,
           370px
         );
-        /* 单侧列宽，再压成正方形边长（宽、半高、上限） */
+        /* 信息框宽度沿用原正方形边长，确保横向占位与左右间距不变。 */
         --side-w: calc((var(--avail-w) - var(--g-w)) / 2);
         --box: min(
           var(--side-w),
           calc((100vh - var(--gap-y) - 2vh) / 2),
           170px
         );
+        /* 横屏信息框高度 = 原正方形边长的 75%。 */
+        --box-h: calc(var(--box) * 0.75);
 
         flex-direction: row;
         justify-content: center;
@@ -220,11 +222,11 @@
         order: 3;
       }
 
-      /* 正方形：边长 = --box，内边距随边长缩放 */
+      /* 横屏信息框：宽度沿用原正方形边长，高度缩为原来的 75%。 */
       .info-box {
         width: var(--box);
-        height: var(--box);
-        aspect-ratio: 1;
+        height: var(--box-h);
+        aspect-ratio: auto;
         border: 1px solid rgba(218, 175, 80, 0.45);
         border-radius: 7px;
         background: rgba(0, 0, 0, 0.15);
@@ -249,7 +251,7 @@
         transform: scale(0.97);
       }
 
-      /* 字号随正方形边长统一缩放，保证不超出、空隙适中 */
+      /* 字号仍按原信息框宽度缩放，避免因高度变化导致文字突然变小。 */
       .info-box p {
         font-size: clamp(10px, calc(var(--box) * 0.068), 12px);
         line-height: 1.42;
@@ -281,6 +283,7 @@
           calc((100vh - var(--gap-y) - 1vh) / 2),
           130px
         );
+        /* --box-h 已在横屏基础规则中定义，这里只调整宽度约束与间距。 */
         --gap-y: 1.2vh;
         --gap-x: 1.2vw;
       }
@@ -354,7 +357,10 @@
       });
     }
     function toggleMusic() { if (audio.paused) audio.play(); else audio.pause(); }
-    function openLink(url) { window.open(url, '_blank'); }
+    // 统一外链入口：调用方只负责传入原 URL，地址本身不做任何改写。
+    function openLink(url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
     if (document.readyState === 'complete') tryPlay();
     else window.addEventListener('load', tryPlay);
 
@@ -468,8 +474,12 @@
       if(Math.random()<0.004)createMeteor();
       requestAnimationFrame(drawStars);
     }
-    window.addEventListener('resize',resize);
-    resize();drawStars();
+    // 尺寸变化与横竖屏旋转都重新计算画布；CSS 的 orientation 媒体查询负责布局切换。
+    window.addEventListener('resize', resize, { passive: true });
+    window.addEventListener('orientationchange', resize, { passive: true });
+
+    resize();
+    drawStars();
   </script>
 </body>
 </html>
