@@ -89,6 +89,35 @@
       50% { opacity: 1; transform: scale(1.08); }
     }
 
+    /* 观音头部左上方 🌟 → PDF 电子书阅读器（与 ✨ 镜像对称） */
+    .star-link {
+      position: absolute;
+      top: 6%;
+      left: 14%;
+      z-index: 12;
+      font-size: clamp(18px, 5.2vw, 28px);
+      line-height: 1;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      filter: drop-shadow(0 0 6px rgba(255, 240, 200, 0.85));
+      animation: sparklePulse 2.4s ease-in-out infinite;
+      pointer-events: auto;
+      text-decoration: none;
+      color: inherit;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .star-link:hover {
+      filter: drop-shadow(0 0 10px rgba(255, 255, 220, 1));
+      transform: scale(1.12);
+    }
+    .star-link:active {
+      transform: scale(0.95);
+    }
+
     .throne-area {
       position:relative;
       width: min(92vw, 480px);
@@ -241,6 +270,11 @@
         right: 12%;
         font-size: clamp(16px, 3.2vh, 26px);
       }
+      .star-link {
+        top: 5%;
+        left: 12%;
+        font-size: clamp(16px, 3.2vh, 26px);
+      }
 
       /* 左右信息栏 */
       .landscape-boxes {
@@ -347,6 +381,7 @@
       <img src="guanyin.webp" alt="观音">
       <div class="guanyin-protect" aria-hidden="true"></div>
       <button type="button" class="sparkle-link" title="视频播放器" aria-label="打开视频播放器" onclick="openLink('https://totp99.github.io/mp4-player/')">✨</button>
+      <button type="button" class="star-link" title="PDF 电子书阅读器" aria-label="打开 PDF 电子书阅读器" onclick="openLink('http://totp99.github.io/PDF-book-reader-/')">🌟</button>
     </div>
 
     <!-- 横屏右侧两个框 -->
