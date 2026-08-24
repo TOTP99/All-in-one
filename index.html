@@ -89,33 +89,32 @@
       50% { opacity: 1; transform: scale(1.08); }
     }
 
-    /* 观音头部左上方 🌟 → PDF 电子书阅读器（与 ✨ 镜像对称） */
-    .star-link {
-      position: absolute;
-      top: 6%;
-      left: 14%;
-      z-index: 12;
-      font-size: clamp(18px, 5.2vw, 28px);
+    /* 竖屏点击莲花后，随机出现在观音头像上方星空区域的图标 */
+    .sky-icon {
+      position: fixed;
+      z-index: 15;
+      font-size: clamp(20px, 6vw, 32px);
       line-height: 1;
       cursor: pointer;
       user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
-      filter: drop-shadow(0 0 6px rgba(255, 240, 200, 0.85));
-      animation: sparklePulse 2.4s ease-in-out infinite;
-      pointer-events: auto;
-      text-decoration: none;
-      color: inherit;
       background: none;
       border: none;
       padding: 4px;
+      filter: drop-shadow(0 0 6px rgba(255, 240, 200, 0.85));
+      animation: sparklePulse 2.4s ease-in-out infinite, skyIconFadeIn 0.35s ease-out;
+      pointer-events: auto;
     }
-    .star-link:hover {
-      filter: drop-shadow(0 0 10px rgba(255, 255, 220, 1));
-      transform: scale(1.12);
+    .sky-icon:active {
+      transform: scale(0.9);
     }
-    .star-link:active {
-      transform: scale(0.95);
+    @keyframes skyIconFadeIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (orientation: landscape) {
+      .sky-icon { display: none !important; }
     }
 
     .throne-area {
@@ -270,11 +269,6 @@
         right: 12%;
         font-size: clamp(16px, 3.2vh, 26px);
       }
-      .star-link {
-        top: 5%;
-        left: 12%;
-        font-size: clamp(16px, 3.2vh, 26px);
-      }
 
       /* 左右信息栏 */
       .landscape-boxes {
@@ -380,8 +374,7 @@
     <div class="guanyin-wrapper">
       <img src="guanyin.webp" alt="观音">
       <div class="guanyin-protect" aria-hidden="true"></div>
-      <button type="button" class="sparkle-link" title="视频播放器" aria-label="打开视频播放器" onclick="openLink('https://totp99.github.io/mp4-player/')">✨</button>
-      <button type="button" class="star-link" title="PDF 电子书阅读器" aria-label="打开 PDF 电子书阅读器" onclick="openLink('http://totp99.github.io/PDF-book-reader-/')">🌟</button>
+      <button type="button" class="sparkle-link" title="音乐开关" aria-label="播放音乐" onclick="handleSparkleClick()">✨</button>
     </div>
 
     <!-- 横屏右侧两个框 -->
@@ -414,7 +407,7 @@
         <div class="hotspot hot-zjiao"   title="掷茭"   onclick="openLink('https://totp99.github.io/ZJiao/')"></div>
         <div class="hotspot hot-mahjong" title="麻将"   onclick="openLink('https://totp99.github.io/Mahjong/')"></div>
         <div class="hotspot hot-slot"    title="老虎机" onclick="openLink('https://totp99.github.io/Slot/')"></div>
-        <div class="hotspot hot-lotus"   title="音乐开关" onclick="toggleMusic()"></div>
+        <div class="hotspot hot-lotus"   title="呼出播放器/阅读器" onclick="spawnSkyIcons()"></div>
       </div>
     </div>
   </div>
@@ -423,20 +416,49 @@
 
   <script>
     const audio = document.getElementById('bgm');
-    function tryPlay() {
-      audio.play().catch(() => {
-        const r = () => audio.play();
-        document.addEventListener('click', r, {once:true});
-        document.addEventListener('touchstart', r, {once:true});
-      });
+    // ✨ 点击开始播放音乐；再次点击（此时已在播放）则让 ✨ 消失。
+    function handleSparkleClick() {
+      if (audio.paused) {
+        audio.play().catch(() => {});
+      } else {
+        document.querySelectorAll('.sparkle-link').forEach(function (btn) {
+          btn.style.display = 'none';
+        });
+      }
     }
-    function toggleMusic() { if (audio.paused) audio.play(); else audio.pause(); }
     // 统一外链入口：调用方只负责传入原 URL，地址本身不做任何改写。
     function openLink(url) {
       window.open(url, '_blank', 'noopener,noreferrer');
     }
-    if (document.readyState === 'complete') tryPlay();
-    else window.addEventListener('load', tryPlay);
+
+    // 竖屏点击莲花：在观音头像上方的星空区域随机位置呼出 📖 / 🎥 两个入口。
+    function spawnSkyIcons() {
+      document.querySelectorAll('.sky-icon').forEach(function (el) { el.remove(); });
+
+      const icons = [
+        { emoji: '📖', url: 'https://totp99.github.io/PDF-book-reader-/', label: 'PDF 电子书阅读器' },
+        { emoji: '🎥', url: 'https://totp99.github.io/mp4-player/', label: '视频播放器' }
+      ];
+      // 左右各占一个区间，避免两个图标彼此重叠；随机交换左右顺序。
+      const zones = [{ xMin: 8, xMax: 40 }, { xMin: 58, xMax: 90 }];
+      if (Math.random() < 0.5) zones.reverse();
+
+      icons.forEach(function (icon, i) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sky-icon';
+        btn.textContent = icon.emoji;
+        btn.title = icon.label;
+        btn.setAttribute('aria-label', icon.label);
+        const zone = zones[i];
+        const left = zone.xMin + Math.random() * (zone.xMax - zone.xMin);
+        const top = 2 + Math.random() * 14; // 头像上方星空区域
+        btn.style.left = left + '%';
+        btn.style.top = top + '%';
+        btn.onclick = function () { openLink(icon.url); };
+        document.body.appendChild(btn);
+      });
+    }
 
     /* ========== 观音图屏蔽拷贝 ========== */
     (function protectGuanyin() {
