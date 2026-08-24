@@ -56,7 +56,7 @@
       -webkit-touch-callout: none;
     }
 
-    /* 观音头部右上方 ✨ → mp4 播放器 */
+    /* 观音头部右上方 ✨ → 背景音乐播放/暂停开关（图标本身常驻，不会消失） */
     .sparkle-link {
       position: absolute;
       top: 6%;
@@ -71,8 +71,6 @@
       filter: drop-shadow(0 0 6px rgba(255, 240, 200, 0.85));
       animation: sparklePulse 2.4s ease-in-out infinite;
       pointer-events: auto;
-      text-decoration: none;
-      color: inherit;
       background: none;
       border: none;
       padding: 4px;
@@ -89,7 +87,7 @@
       50% { opacity: 1; transform: scale(1.08); }
     }
 
-    /* 竖屏点击莲花后，随机出现在观音头像上方星空区域的图标 */
+    /* 竖屏点击莲花后，随机出现在观音头像上方星空区域的 📖 / 📽️ 入口图标 */
     .sky-icon {
       position: fixed;
       z-index: 15;
@@ -109,10 +107,19 @@
     .sky-icon:active {
       transform: scale(0.9);
     }
+    /* 由 JS 在再次点击莲花时添加：变小淡出，过渡结束后再从 DOM 移除 */
+    .sky-icon-hide {
+      animation: none !important;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      transform: scale(0);
+      opacity: 0;
+      pointer-events: none;
+    }
     @keyframes skyIconFadeIn {
       from { opacity: 0; transform: translateY(-8px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+    /* 莲花菜单横屏时本就隐藏，无法再触发生成；这条规则只防止竖屏生成后旋转到横屏时残留 */
     @media (orientation: landscape) {
       .sky-icon { display: none !important; }
     }
@@ -374,7 +381,7 @@
     <div class="guanyin-wrapper">
       <img src="guanyin.webp" alt="观音">
       <div class="guanyin-protect" aria-hidden="true"></div>
-      <button type="button" class="sparkle-link" title="音乐开关" aria-label="播放音乐" onclick="handleSparkleClick()">✨</button>
+      <button type="button" id="music-toggle" class="sparkle-link" title="播放音乐" aria-label="播放音乐" onclick="handleSparkleClick()">✨</button>
     </div>
 
     <!-- 横屏右侧两个框 -->
@@ -415,31 +422,51 @@
   <audio id="bgm" src="Lian.mp3" loop preload="auto"></audio>
 
   <script>
+    /* ========== 音乐控制：✨ 播放/暂停开关（图标常驻，不消失） ========== */
     const audio = document.getElementById('bgm');
-    // ✨ 点击开始播放音乐；再次点击（此时已在播放）则让 ✨ 消失。
+    const musicToggleBtn = document.getElementById('music-toggle');
+
     function handleSparkleClick() {
       if (audio.paused) {
+        // 浏览器可能因自动播放策略拒绝，静默忽略即可（用户可再次点击重试）。
         audio.play().catch(() => {});
       } else {
-        document.querySelectorAll('.sparkle-link').forEach(function (btn) {
-          btn.style.display = 'none';
-        });
+        audio.pause();
       }
     }
+    // 无论播放是通过点击触发还是被拒绝回退，都以 audio 的真实状态同步按钮文案，
+    // 避免出现“显示播放但其实在暂停”之类不一致的人为疏漏。
+    audio.addEventListener('play', function () {
+      musicToggleBtn.title = '暂停音乐';
+      musicToggleBtn.setAttribute('aria-label', '暂停音乐');
+    });
+    audio.addEventListener('pause', function () {
+      musicToggleBtn.title = '播放音乐';
+      musicToggleBtn.setAttribute('aria-label', '播放音乐');
+    });
+
     // 统一外链入口：调用方只负责传入原 URL，地址本身不做任何改写。
     function openLink(url) {
       window.open(url, '_blank', 'noopener,noreferrer');
     }
 
-    // 竖屏点击莲花：在观音头像上方的星空区域随机位置呼出 📖 / 🎥 两个入口。
+    /* ========== 莲花：随机呼出 📖 / 📽️，再次点击变小消失 ========== */
+    let skyIconsVisible = false;
+
     function spawnSkyIcons() {
+      if (skyIconsVisible) {
+        hideSkyIcons();
+        return;
+      }
+      // 防御性清理：若上一轮的淡出动画尚未结束（快速连续点击莲花），
+      // 先移除残留节点，避免新旧图标同时出现在画面上。
       document.querySelectorAll('.sky-icon').forEach(function (el) { el.remove(); });
 
       const icons = [
         { emoji: '📖', url: 'https://totp99.github.io/PDF-book-reader-/', label: 'PDF 电子书阅读器' },
-        { emoji: '🎥', url: 'https://totp99.github.io/mp4-player/', label: '视频播放器' }
+        { emoji: '📽️', url: 'https://totp99.github.io/mp4-player/', label: '视频播放器' }
       ];
-      // 左右各占一个区间，避免两个图标彼此重叠；随机交换左右顺序。
+      // 屏幕左右各划一个区间，保证两个图标不重叠；区间对图标的分配随机交换。
       const zones = [{ xMin: 8, xMax: 40 }, { xMin: 58, xMax: 90 }];
       if (Math.random() < 0.5) zones.reverse();
 
@@ -452,15 +479,26 @@
         btn.setAttribute('aria-label', icon.label);
         const zone = zones[i];
         const left = zone.xMin + Math.random() * (zone.xMax - zone.xMin);
-        const top = 2 + Math.random() * 14; // 头像上方星空区域
+        const top = 2 + Math.random() * 14; // 头像上方的星空区域
         btn.style.left = left + '%';
         btn.style.top = top + '%';
         btn.onclick = function () { openLink(icon.url); };
         document.body.appendChild(btn);
       });
+      skyIconsVisible = true;
     }
 
-    /* ========== 观音图屏蔽拷贝 ========== */
+    function hideSkyIcons() {
+      const els = document.querySelectorAll('.sky-icon');
+      els.forEach(function (el) { el.classList.add('sky-icon-hide'); });
+      // 等缩小淡出的过渡动画（0.25s，见 CSS .sky-icon-hide）播完再真正移除节点。
+      setTimeout(function () {
+        els.forEach(function (el) { el.remove(); });
+      }, 260);
+      skyIconsVisible = false;
+    }
+
+    /* ========== 观音图保护：禁止右键另存 / 拖拽 / 常见保存快捷键 ========== */
     (function protectGuanyin() {
       // 禁止右键菜单（整页，重点保护观音区域）
       document.addEventListener('contextmenu', function (e) {
@@ -496,20 +534,14 @@
         }
       }, true);
 
-      // 移动端长按提示拦截（配合 CSS touch-callout）
-      document.addEventListener('touchstart', function (e) {
-        if (e.target.closest('.guanyin-wrapper')) {
-          // 不阻止触摸，只靠 CSS 与右键拦截
-        }
-      }, { passive: true });
-
-      // 给观音图设置 draggable=false
+      // 给观音图设置 draggable=false，并单独拦截其右键菜单
       document.querySelectorAll('.guanyin-wrapper img').forEach(function (img) {
         img.setAttribute('draggable', 'false');
         img.addEventListener('contextmenu', function (e) { e.preventDefault(); });
       });
     })();
 
+    /* ========== 星空背景：星星 + 流星 canvas 动画 ========== */
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
     let stars=[], meteors=[], w, h;
