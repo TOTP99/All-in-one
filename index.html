@@ -87,7 +87,7 @@
       50% { opacity: 1; transform: scale(1.08); }
     }
 
-    /* 竖屏点击莲花后，随机出现在观音头像上方星空区域的 📖 / 📽️ 入口图标 */
+    /* 竖屏点击莲花后，随机出现在观音头像上方星空区域的 📖 / 📽️ / 🎙️ 入口图标 */
     .sky-icon {
       position: fixed;
       z-index: 15;
@@ -103,17 +103,58 @@
       filter: drop-shadow(0 0 6px rgba(255, 240, 200, 0.85));
       animation: sparklePulse 2.4s ease-in-out infinite, skyIconFadeIn 0.35s ease-out;
       pointer-events: auto;
+      will-change: transform, opacity;
     }
     .sky-icon:active {
       transform: scale(0.9);
     }
-    /* 由 JS 在再次点击莲花时添加：变小淡出，过渡结束后再从 DOM 移除 */
-    .sky-icon-hide {
-      animation: none !important;
-      transition: transform 0.25s ease, opacity 0.25s ease;
-      transform: scale(0);
-      opacity: 0;
+
+    /* 图标周围散落的 ✨ 星光小星星，随机位置 + 错开延迟，营造闪烁效果 */
+    .sky-sparkle {
+      position: absolute;
+      font-size: 0.4em;
+      line-height: 1;
       pointer-events: none;
+      opacity: 0;
+      color: #fff8e0;
+      text-shadow: 0 0 4px rgba(255,255,255,0.95), 0 0 8px rgba(255,214,140,0.65);
+      animation: sparkleTwinkle 1.6s ease-in-out infinite;
+    }
+    @keyframes sparkleTwinkle {
+      0%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+      50%      { opacity: 1; transform: scale(1.2) rotate(20deg); }
+    }
+
+    /* 由 JS 在再次点击莲花时添加：像流星一样朝随机方向飞出并拖出光尾，边飞边淡出 */
+    .sky-icon-hide {
+      animation: meteorFly 0.6s cubic-bezier(.3,.7,.4,1) forwards !important;
+      pointer-events: none;
+    }
+    .sky-icon-hide .sky-sparkle {
+      animation: none !important;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .sky-icon-hide::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 42px; height: 2px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0));
+      border-radius: 2px;
+      transform-origin: 0% 50%;
+      transform: translateY(-50%) rotate(var(--mrot, 0deg));
+      opacity: 0;
+      animation: meteorTail 0.6s ease-out forwards;
+    }
+    @keyframes meteorFly {
+      0%   { transform: translate(0, 0) scale(1);   opacity: 1; }
+      100% { transform: translate(var(--mx, -120px), var(--my, 90px)) scale(0.2); opacity: 0; }
+    }
+    @keyframes meteorTail {
+      0%   { opacity: 0; }
+      25%  { opacity: 0.9; }
+      100% { opacity: 0; }
     }
     @keyframes skyIconFadeIn {
       from { opacity: 0; transform: translateY(-8px); }
@@ -450,8 +491,26 @@
       window.open(url, '_blank', 'noopener,noreferrer');
     }
 
-    /* ========== 莲花：随机呼出 📖 / 📽️，再次点击变小消失 ========== */
+    /* ========== 莲花：随机呼出 📖 / 📽️ / 🎙️，再次点击像流星一样飞散消失 ========== */
     let skyIconsVisible = false;
+
+    // 在图标按钮内散布几颗 ✨ 小星星，随机位置与动画延迟，实现星光闪烁效果
+    function addSparkles(btn) {
+      const count = 4 + Math.floor(Math.random() * 2); // 4~5 颗
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('span');
+        s.className = 'sky-sparkle';
+        s.textContent = '✨';
+        // 围绕图标本体，在其周边环形范围内随机撒开
+        const angle = Math.random() * Math.PI * 2;
+        const radius = 14 + Math.random() * 16; // px
+        s.style.left = 'calc(50% + ' + (Math.cos(angle) * radius) + 'px)';
+        s.style.top = 'calc(50% + ' + (Math.sin(angle) * radius) + 'px)';
+        s.style.animationDelay = (Math.random() * 1.6).toFixed(2) + 's';
+        s.style.animationDuration = (1.2 + Math.random() * 1.2).toFixed(2) + 's';
+        btn.appendChild(s);
+      }
+    }
 
     function spawnSkyIcons() {
       if (skyIconsVisible) {
@@ -464,11 +523,20 @@
 
       const icons = [
         { emoji: '📖', url: 'https://totp99.github.io/PDF-book-reader-/', label: 'PDF 电子书阅读器' },
-        { emoji: '📽️', url: 'https://totp99.github.io/mp4-player/', label: '视频播放器' }
+        { emoji: '📽️', url: 'https://totp99.github.io/mp4-player/', label: '视频播放器' },
+        { emoji: '🎙️', url: 'https://totp99.github.io/mp3/', label: '录音/播客' }
       ];
-      // 屏幕左右各划一个区间，保证两个图标不重叠；区间对图标的分配随机交换。
-      const zones = [{ xMin: 8, xMax: 40 }, { xMin: 58, xMax: 90 }];
-      if (Math.random() < 0.5) zones.reverse();
+      // 屏幕划出三个互不重叠的区间，三个图标随机打乱分配到各区间。
+      const zones = [
+        { xMin: 5,  xMax: 28 },
+        { xMin: 36, xMax: 60 },
+        { xMin: 68, xMax: 92 }
+      ];
+      // Fisher-Yates 打乱区间顺序
+      for (let i = zones.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = zones[i]; zones[i] = zones[j]; zones[j] = tmp;
+      }
 
       icons.forEach(function (icon, i) {
         const btn = document.createElement('button');
@@ -482,6 +550,19 @@
         const top = 2 + Math.random() * 14; // 头像上方的星空区域
         btn.style.left = left + '%';
         btn.style.top = top + '%';
+
+        // 消失时的流星飞出方向：随机角度、随机距离，并计算光尾应指向的反方向角度
+        const flyAngle = Math.random() * Math.PI * 2;
+        const flyDist = 90 + Math.random() * 70;
+        const mx = Math.cos(flyAngle) * flyDist;
+        const my = Math.sin(flyAngle) * flyDist;
+        btn.style.setProperty('--mx', mx.toFixed(1) + 'px');
+        btn.style.setProperty('--my', my.toFixed(1) + 'px');
+        const tailDeg = (Math.atan2(my, mx) * 180 / Math.PI) + 180;
+        btn.style.setProperty('--mrot', tailDeg.toFixed(1) + 'deg');
+
+        addSparkles(btn);
+
         btn.onclick = function () { openLink(icon.url); };
         document.body.appendChild(btn);
       });
@@ -491,10 +572,10 @@
     function hideSkyIcons() {
       const els = document.querySelectorAll('.sky-icon');
       els.forEach(function (el) { el.classList.add('sky-icon-hide'); });
-      // 等缩小淡出的过渡动画（0.25s，见 CSS .sky-icon-hide）播完再真正移除节点。
+      // 等流星飞出+拖尾淡出的动画（0.6s，见 CSS .sky-icon-hide / meteorFly）播完再真正移除节点。
       setTimeout(function () {
         els.forEach(function (el) { el.remove(); });
-      }, 260);
+      }, 620);
       skyIconsVisible = false;
     }
 
