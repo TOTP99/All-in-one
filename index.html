@@ -5,198 +5,148 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>观音</title>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-      width:100%; height:100%; background:#000; overflow:hidden;
-      display:flex; justify-content:center; align-items:center;
+      width: 100%; height: 100%; background: #000; overflow: hidden;
+      display: flex; justify-content: center; align-items: center;
     }
     #stars {
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      pointer-events:none; z-index:0;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0;
     }
     .container {
-      position:relative; width:100%; height:100%;
-      display:flex; flex-direction:column;
-      justify-content:center; align-items:center; z-index:1;
+      position: relative; width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center; z-index: 1;
+      transition: opacity 0.35s ease, transform 0.45s cubic-bezier(.4, 0, .2, 1);
+    }
+    .container.orient-fade {
+      opacity: 0;
+      transform: scale(0.96);
     }
 
-    /* ========== 竖屏（默认） ========== */
+    /* ========== 竖屏 ========== */
     .guanyin-wrapper {
-      position:relative;
+      position: relative;
       width: min(83vw, 414px);
       animation: float 6s ease-in-out infinite;
       z-index: 5;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
       user-select: none;
+      -webkit-user-select: none;
     }
     .guanyin-wrapper img {
-      width:100%; height:auto; display:block;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      -webkit-user-drag: none;
-      -khtml-user-drag: none;
-      -moz-user-drag: none;
-      -o-user-drag: none;
-      user-drag: none;
-      pointer-events: none;
-      -webkit-touch-callout: none;
+      width: 100%; height: auto; display: block;
+      user-select: none; -webkit-user-select: none;
+      -webkit-user-drag: none; user-drag: none;
+      pointer-events: none; -webkit-touch-callout: none;
     }
-    /* 透明遮罩，屏蔽右键/长按保存观音图 */
     .guanyin-protect {
-      position: absolute;
-      inset: 0;
-      z-index: 6;
+      position: absolute; inset: 0; z-index: 6;
       background: transparent;
-      -webkit-user-select: none;
-      user-select: none;
+      user-select: none; -webkit-user-select: none;
       -webkit-touch-callout: none;
     }
 
-    /* 观音头部右上方 ✨ → 背景音乐播放/暂停开关（图标本身常驻，不会消失） */
     .sparkle-link {
-      position: absolute;
-      top: 6%;
-      right: 14%;
-      z-index: 12;
-      font-size: clamp(18px, 5.2vw, 28px);
-      line-height: 1;
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
+      position: absolute; top: 6%; right: 14%; z-index: 12;
+      font-size: clamp(18px, 5.2vw, 28px); line-height: 1;
+      cursor: pointer; user-select: none; -webkit-user-select: none;
       -webkit-touch-callout: none;
       filter: drop-shadow(0 0 6px rgba(255, 240, 200, 0.85));
       animation: sparklePulse 2.4s ease-in-out infinite;
-      pointer-events: auto;
-      background: none;
-      border: none;
-      padding: 4px;
+      pointer-events: auto; background: none; border: none; padding: 4px;
     }
     .sparkle-link:hover {
       filter: drop-shadow(0 0 10px rgba(255, 255, 220, 1));
       transform: scale(1.12);
     }
-    .sparkle-link:active {
-      transform: scale(0.95);
-    }
+    .sparkle-link:active { transform: scale(0.95); }
+
     @keyframes sparklePulse {
       0%, 100% { opacity: 0.85; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.08); }
     }
 
-    /* 竖屏点击莲花后，随机出现在观音头像上方星空区域的 📖 / 📽️ / 🎙️ 入口图标 */
+    /* 竖屏星空入口图标 */
     .sky-icon {
-      position: fixed;
-      z-index: 15;
-      font-size: clamp(20px, 6vw, 32px);
-      line-height: 1;
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
+      position: fixed; z-index: 15;
+      font-size: clamp(22px, 6.5vw, 34px); line-height: 1;
+      cursor: pointer; user-select: none; -webkit-user-select: none;
       -webkit-touch-callout: none;
-      background: none;
-      border: none;
-      padding: 4px;
+      background: none; border: none; padding: 6px;
       filter: drop-shadow(0 0 6px rgba(255, 240, 200, 0.85));
       animation: sparklePulse 2.4s ease-in-out infinite, skyIconFadeIn 0.35s ease-out;
-      pointer-events: auto;
-      will-change: transform, opacity;
+      pointer-events: auto; will-change: transform, opacity;
     }
-    .sky-icon:active {
-      transform: scale(0.9);
-    }
+    .sky-icon:active { transform: scale(0.9); }
 
-    /* 图标周围散落的 ✨ 星光小星星，随机位置 + 错开延迟，营造闪烁效果 */
     .sky-sparkle {
-      position: absolute;
-      font-size: 0.4em;
-      line-height: 1;
-      pointer-events: none;
-      opacity: 0;
-      color: #fff8e0;
+      position: absolute; font-size: 0.4em; line-height: 1;
+      pointer-events: none; opacity: 0; color: #fff8e0;
       text-shadow: 0 0 4px rgba(255,255,255,0.95), 0 0 8px rgba(255,214,140,0.65);
       animation: sparkleTwinkle 1.6s ease-in-out infinite;
     }
     @keyframes sparkleTwinkle {
       0%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); }
-      50%      { opacity: 1; transform: scale(1.2) rotate(20deg); }
+      50% { opacity: 1; transform: scale(1.2) rotate(20deg); }
     }
 
-    /* 由 JS 在再次点击莲花时添加：像流星一样朝随机方向飞出并拖出光尾，边飞边淡出 */
     .sky-icon-hide {
       animation: meteorFly 0.6s cubic-bezier(.3,.7,.4,1) forwards !important;
       pointer-events: none;
     }
     .sky-icon-hide .sky-sparkle {
-      animation: none !important;
-      opacity: 0;
-      transition: opacity 0.15s ease;
+      animation: none !important; opacity: 0; transition: opacity 0.15s ease;
     }
     .sky-icon-hide::after {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
+      content: ''; position: absolute; top: 50%; left: 50%;
       width: 42px; height: 2px;
       background: linear-gradient(90deg, rgba(255,255,255,0.95), rgba(255,255,255,0));
-      border-radius: 2px;
-      transform-origin: 0% 50%;
+      border-radius: 2px; transform-origin: 0% 50%;
       transform: translateY(-50%) rotate(var(--mrot, 0deg));
-      opacity: 0;
-      animation: meteorTail 0.6s ease-out forwards;
+      opacity: 0; animation: meteorTail 0.6s ease-out forwards;
     }
     @keyframes meteorFly {
-      0%   { transform: translate(0, 0) scale(1);   opacity: 1; }
+      0% { transform: translate(0, 0) scale(1); opacity: 1; }
       100% { transform: translate(var(--mx, -120px), var(--my, 90px)) scale(0.2); opacity: 0; }
     }
     @keyframes meteorTail {
-      0%   { opacity: 0; }
-      25%  { opacity: 0.9; }
+      0% { opacity: 0; }
+      25% { opacity: 0.9; }
       100% { opacity: 0; }
     }
     @keyframes skyIconFadeIn {
       from { opacity: 0; transform: translateY(-8px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    /* 莲花菜单横屏时本就隐藏，无法再触发生成；这条规则只防止竖屏生成后旋转到横屏时残留 */
     @media (orientation: landscape) {
       .sky-icon { display: none !important; }
     }
 
     .throne-area {
-      position:relative;
+      position: relative;
       width: min(92vw, 480px);
       height: min(48vw, 250px);
       margin-top: -40px;
-      display:flex; justify-content:center; align-items:flex-end;
+      display: flex; justify-content: center; align-items: flex-end;
       z-index: 2;
     }
-
     .mandala-arc {
-      position:absolute;
-      left:50%; bottom:0;
-      width:100%; height:100%;
+      position: absolute; left: 50%; bottom: 0;
+      width: 100%; height: 100%;
       transform: translateX(-50%);
-      pointer-events:none;
-      z-index:1;
+      pointer-events: none; z-index: 1;
     }
-
     .mandala {
-      position:absolute;
-      bottom:0;
+      position: absolute; bottom: 0;
       background-image: url("mandala.webp");
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
+      background-size: contain; background-repeat: no-repeat; background-position: center;
       opacity: 0.88;
       filter: drop-shadow(0 0 4px rgba(255, 210, 120, 0.45))
               drop-shadow(0 0 12px rgba(255, 190, 80, 0.25))
               drop-shadow(0 0 22px rgba(255, 170, 50, 0.12));
       animation: mandalaSpin 60s linear infinite;
     }
-
     .m1 { left: 0%;   width: 30%; height: 30%; bottom: -4%; z-index: 8; animation-duration: 72s; animation-direction: reverse; }
     .m2 { left: 11%;  width: 22%; height: 22%; bottom: 12%; z-index: 6; animation-duration: 55s; }
     .m3 { left: 23%;  width: 16%; height: 16%; bottom: 24%; z-index: 4; animation-duration: 80s; animation-direction: reverse; }
@@ -206,81 +156,59 @@
     .m7 { right: 11%; width: 22%; height: 22%; bottom: 12%; z-index: 6; animation-duration: 58s; animation-direction: reverse; }
     .m8 { right: 0%;  width: 30%; height: 30%; bottom: -4%; z-index: 8; animation-duration: 65s; }
     .m9 {
-      left: 50%; width: 20%; height: 20%; bottom: 6%;
-      z-index: 5;
-      animation: mandalaSpinCenter 90s linear infinite;
-      opacity: 0.75;
+      left: 50%; width: 20%; height: 20%; bottom: 6%; z-index: 5;
+      animation: mandalaSpinCenter 90s linear infinite; opacity: 0.75;
     }
 
     .lotus-wrapper {
-      position:relative;
-      width: min(48vw, 220px);
-      z-index: 10;
+      position: relative; width: min(48vw, 220px); z-index: 10;
       animation: throneFloat 7s ease-in-out infinite;
     }
     .lotus-wrapper > img {
-      width:100%; height:auto; display:block;
-      pointer-events:none; position:relative; z-index:2;
+      width: 100%; height: auto; display: block;
+      pointer-events: none; position: relative; z-index: 2;
     }
-
     .hotspot {
-      position:absolute; border-radius:50%; cursor:pointer; z-index:12;
+      position: absolute; border-radius: 50%; cursor: pointer; z-index: 12;
       transition: transform 0.15s ease;
     }
-    .hot-piano   { width:32%; height:32%; top:4%; left:4%; }
-    .hot-zjiao   { width:32%; height:32%; top:4%; right:4%; }
-    .hot-mahjong { width:32%; height:32%; bottom:6%; left:4%; }
-    .hot-slot    { width:32%; height:32%; bottom:6%; right:4%; }
-    .hot-lotus   { width:42%; height:48%; top:26%; left:29%; }
+    .hot-piano   { width: 32%; height: 32%; top: 4%; left: 4%; }
+    .hot-zjiao   { width: 32%; height: 32%; top: 4%; right: 4%; }
+    .hot-mahjong { width: 32%; height: 32%; bottom: 6%; left: 4%; }
+    .hot-slot    { width: 32%; height: 32%; bottom: 6%; right: 4%; }
+    .hot-lotus   { width: 42%; height: 48%; top: 26%; left: 29%; }
     .hotspot:active { transform: scale(0.93); }
 
-    /* 横屏时的四个信息框（竖屏隐藏） */
-    .landscape-boxes {
-      display: none;
-    }
+    /* 横屏田字格：竖屏隐藏 */
+    .landscape-grid { display: none; }
 
     @keyframes float {
-      0%,100% { transform: translateY(0); }
+      0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-12px); }
     }
     @keyframes throneFloat {
-      0%,100% { transform: translateY(0); }
+      0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-5px); }
     }
     @keyframes mandalaSpin {
       from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
     @keyframes mandalaSpinCenter {
       from { transform: translateX(-50%) rotate(0deg); }
-      to   { transform: translateX(-50%) rotate(360deg); }
+      to { transform: translateX(-50%) rotate(360deg); }
     }
 
     /* ========== 横屏 ========== */
     @media (orientation: landscape) {
       .container {
-        /* ===== 响应式布局变量（统一约束方程） ===== */
         --pad-x: 1.5vw;
-        --gap-x: 1.8vw;
-        --gap-y: 1.8vh;
-        /* 可用总宽 = 视口 - 左右内边距 - 观音两侧间隙 */
+        --gap-x: 1.6vw;
+        --grid-gap: 0.6vh;
         --avail-w: calc(100vw - 2 * var(--pad-x) - 2 * var(--gap-x));
-        /* 观音目标占比，再受高度与绝对上限约束 */
-        --g-ratio: 0.48;
-        --g-w: min(
-          calc(var(--avail-w) * var(--g-ratio)),
-          42.55vh,
-          370px
-        );
-        /* 信息框宽度沿用原正方形边长，确保横向占位与左右间距不变。 */
+        --g-w: min(calc(var(--avail-w) * 0.46), 44vh, 360px);
         --side-w: calc((var(--avail-w) - var(--g-w)) / 2);
-        --box: min(
-          var(--side-w),
-          calc((100vh - var(--gap-y) - 2vh) / 2),
-          170px
-        );
-        /* 横屏信息框高度 = 原正方形边长的 75%。 */
-        --box-h: calc(var(--box) * 0.75);
+        --cell: min(var(--side-w), calc((100vh - var(--grid-gap) - 2vh) / 2), 110px);
 
         flex-direction: row;
         justify-content: center;
@@ -290,15 +218,10 @@
         height: 100%;
         max-height: 100vh;
         overflow: hidden;
-        box-sizing: border-box;
       }
 
-      /* 隐藏竖屏的宝座和菜单 */
-      .throne-area {
-        display: none !important;
-      }
+      .throne-area { display: none !important; }
 
-      /* 观音：由 --g-w 驱动，高度不超屏 */
       .guanyin-wrapper {
         width: var(--g-w);
         max-height: 92vh;
@@ -307,132 +230,95 @@
         flex-shrink: 0;
       }
       .guanyin-wrapper img {
-        max-height: 92vh;
-        width: 100%;
-        height: auto;
-        object-fit: contain;
+        max-height: 92vh; width: 100%; height: auto; object-fit: contain;
       }
       .sparkle-link {
-        top: 5%;
-        right: 12%;
+        top: 5%; right: 12%;
         font-size: clamp(16px, 3.2vh, 26px);
       }
 
-      /* 左右信息栏 */
-      .landscape-boxes {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: var(--gap-y);
+      .landscape-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: var(--grid-gap);
+        width: calc(var(--cell) * 2 + var(--grid-gap));
+        height: calc(var(--cell) * 2 + var(--grid-gap));
         flex-shrink: 0;
         max-height: 96vh;
-        width: var(--box);
       }
-      .landscape-boxes.left {
-        order: 1;
-      }
-      .landscape-boxes.right {
-        order: 3;
-      }
+      .landscape-grid.left { order: 1; }
+      .landscape-grid.right { order: 3; }
 
-      /* 横屏信息框：宽度沿用原正方形边长，高度缩为原来的 75%。 */
-      .info-box {
-        width: var(--box);
-        height: var(--box-h);
-        aspect-ratio: auto;
-        border: 1px solid rgba(218, 175, 80, 0.45);
-        border-radius: 7px;
-        background: rgba(0, 0, 0, 0.15);
+      .grid-cell {
+        width: var(--cell);
+        height: var(--cell);
+        border: 1px solid rgba(218, 175, 80, 0.55);
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.12);
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: calc(var(--box) * 0.055);
         cursor: pointer;
-        transition: border-color 0.3s, box-shadow 0.3s, transform 0.15s, background 0.3s;
-        text-align: center;
-        box-shadow: none;
-        overflow: hidden;
-        box-sizing: border-box;
-        flex-shrink: 0;
+        transition: border-color 0.25s, box-shadow 0.25s, transform 0.12s, background 0.25s;
+        user-select: none; -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        font-size: clamp(28px, calc(var(--cell) * 0.42), 48px);
+        line-height: 1;
+        filter: drop-shadow(0 0 4px rgba(255, 230, 160, 0.35));
       }
-      .info-box:hover {
-        border-color: rgba(255, 210, 120, 0.7);
-        background: rgba(255, 200, 100, 0.04);
-        box-shadow: 0 0 12px rgba(255, 200, 100, 0.1);
+      .grid-cell:hover {
+        border-color: rgba(255, 210, 120, 0.85);
+        background: rgba(255, 200, 100, 0.06);
+        box-shadow: 0 0 14px rgba(255, 200, 100, 0.15);
       }
-      .info-box:active {
-        transform: scale(0.97);
-      }
-
-      /* 字号仍按原信息框宽度缩放，避免因高度变化导致文字突然变小。 */
-      .info-box p {
-        font-size: clamp(10px, calc(var(--box) * 0.068), 12px);
-        line-height: 1.42;
-        font-weight: 400;
-        letter-spacing: 0.02em;
-        margin: 0;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
-        max-width: 100%;
-        word-break: break-word;
-        overflow-wrap: break-word;
-      }
-
-      .info-box.piano p { color: #f5f5f5; }
-      .info-box.zjiao p { color: #8fd9b0; }
-      .info-box.mahjong p { color: #6eb8e8; }
-      .info-box.slot p { color: #f7c4bf; }
+      .grid-cell:active { transform: scale(0.92); }
     }
 
-    /* 横屏且很矮（笔记本/部分平板）：再压一档，避免裁切 */
     @media (orientation: landscape) and (max-height: 420px) {
       .container {
-        --g-w: min(
-          calc(var(--avail-w) * 0.42),
-          70vh,
-          280px
-        );
-        --box: min(
-          var(--side-w),
-          calc((100vh - var(--gap-y) - 1vh) / 2),
-          130px
-        );
-        /* --box-h 已在横屏基础规则中定义，这里只调整宽度约束与间距。 */
-        --gap-y: 1.2vh;
+        --g-w: min(calc(var(--avail-w) * 0.4), 68vh, 260px);
+        --cell: min(var(--side-w), calc((100vh - var(--grid-gap) - 1vh) / 2), 88px);
         --gap-x: 1.2vw;
+        --grid-gap: 0.5vh;
       }
     }
-</style>
+  </style>
 </head>
 <body>
   <canvas id="stars"></canvas>
 
-  <div class="container">
-    <!-- 横屏左侧两个框 -->
-    <div class="landscape-boxes left">
-      <div class="info-box piano" onclick="openLink('https://totp99.github.io/Piano/')">
-        <p>自动钢琴：支持Midi 文件，古典音乐。</p>
-      </div>
-      <div class="info-box zjiao" onclick="openLink('https://totp99.github.io/ZJiao/')">
-        <p>掷茭 108问卜 星座 八字 星图 每日运程 。</p>
-      </div>
+  <div class="container" id="main-container">
+    <!-- 横屏左侧田字格：🎰 🔮 🎲 🎹 -->
+    <div class="landscape-grid left">
+      <button type="button" class="grid-cell" title="老虎机" aria-label="老虎机"
+              data-url="https://totp99.github.io/Slots-machine/">🎰</button>
+      <button type="button" class="grid-cell" title="掷茭" aria-label="掷茭"
+              data-url="https://totp99.github.io/Zhi-Jiao/">🔮</button>
+      <button type="button" class="grid-cell" title="麻将" aria-label="麻将"
+              data-url="https://totp99.github.io/Mahjong/">🎲</button>
+      <button type="button" class="grid-cell" title="钢琴" aria-label="钢琴"
+              data-url="https://totp99.github.io/Piano/">🎹</button>
     </div>
 
     <!-- 观音 -->
     <div class="guanyin-wrapper">
       <img src="guanyin.webp" alt="观音">
       <div class="guanyin-protect" aria-hidden="true"></div>
-      <button type="button" id="music-toggle" class="sparkle-link" title="播放音乐" aria-label="播放音乐" onclick="handleSparkleClick()">✨</button>
+      <button type="button" id="music-toggle" class="sparkle-link"
+              title="播放音乐" aria-label="播放音乐">✨</button>
     </div>
 
-    <!-- 横屏右侧两个框 -->
-    <div class="landscape-boxes right">
-      <div class="info-box mahjong" onclick="openLink('https://totp99.github.io/Mahjong/')">
-        <p>穷胡麻将： 东北地区/大东区打法。</p>
-      </div>
-      <div class="info-box slot" onclick="openLink('https://totp99.github.io/Slot/')">
-        <p>MP3/老虎机：赌场效果，听歌。</p>
-      </div>
+    <!-- 横屏右侧田字格：📖 🎙️ 📽️ 📻 -->
+    <div class="landscape-grid right">
+      <button type="button" class="grid-cell" title="PDF 电子书阅读器" aria-label="PDF 电子书阅读器"
+              data-url="https://totp99.github.io/PDF-book-reader/">📖</button>
+      <button type="button" class="grid-cell" title="录音/播客" aria-label="录音/播客"
+              data-url="https://totp99.github.io/Mp3-player/">🎙️</button>
+      <button type="button" class="grid-cell" title="视频播放器" aria-label="视频播放器"
+              data-url="https://totp99.github.io/Mp4-player/">📽️</button>
+      <button type="button" class="grid-cell" title="广播电台" aria-label="广播电台"
+              data-url="https://totp99.github.io/Radio/">📻</button>
     </div>
 
     <!-- 竖屏宝座（横屏隐藏） -->
@@ -448,35 +334,65 @@
         <div class="mandala m8"></div>
         <div class="mandala m9"></div>
       </div>
-
       <div class="lotus-wrapper">
         <img src="lotus.webp" alt="莲花菜单">
-        <div class="hotspot hot-piano"   title="钢琴"   onclick="openLink('https://totp99.github.io/Piano/')"></div>
-        <div class="hotspot hot-zjiao"   title="掷茭"   onclick="openLink('https://totp99.github.io/ZJiao/')"></div>
-        <div class="hotspot hot-mahjong" title="麻将"   onclick="openLink('https://totp99.github.io/Mahjong/')"></div>
-        <div class="hotspot hot-slot"    title="老虎机" onclick="openLink('https://totp99.github.io/Slot/')"></div>
-        <div class="hotspot hot-lotus"   title="呼出播放器/阅读器" onclick="spawnSkyIcons()"></div>
+        <div class="hotspot hot-piano"   title="钢琴"   data-url="https://totp99.github.io/Piano/"></div>
+        <div class="hotspot hot-zjiao"   title="掷茭"   data-url="https://totp99.github.io/Zhi-Jiao/"></div>
+        <div class="hotspot hot-mahjong" title="麻将"   data-url="https://totp99.github.io/Mahjong/"></div>
+        <div class="hotspot hot-slot"    title="老虎机" data-url="https://totp99.github.io/Slots-machine/"></div>
+        <div class="hotspot hot-lotus"   title="呼出播放器/阅读器" id="lotus-center"></div>
       </div>
     </div>
   </div>
 
-  <audio id="bgm" src="Lian.mp3" loop preload="auto"></audio>
+  <audio id="bgm" src="Heart Sutra.mp3" loop preload="auto"></audio>
 
   <script>
-    /* ========== 音乐控制：✨ 播放/暂停开关（图标常驻，不消失） ========== */
+    /* ========== 点击音效（Web Audio，无外部文件） ========== */
+    let audioCtx = null;
+    function playClick() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const t = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, t);
+        osc.frequency.exponentialRampToValueAtTime(440, t + 0.08);
+        gain.gain.setValueAtTime(0.12, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(t);
+        osc.stop(t + 0.12);
+      } catch (_) {}
+    }
+
+    /* ========== 统一外链 ========== */
+    function openLink(url) {
+      playClick();
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    /* ========== 绑定 data-url 点击 ========== */
+    document.querySelectorAll('[data-url]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        openLink(el.getAttribute('data-url'));
+      });
+    });
+
+    /* ========== 背景音乐 ✨ ========== */
     const audio = document.getElementById('bgm');
     const musicToggleBtn = document.getElementById('music-toggle');
-
-    function handleSparkleClick() {
+    musicToggleBtn.addEventListener('click', function () {
+      playClick();
       if (audio.paused) {
-        // 浏览器可能因自动播放策略拒绝，静默忽略即可（用户可再次点击重试）。
-        audio.play().catch(() => {});
+        audio.play().catch(function () {});
       } else {
         audio.pause();
       }
-    }
-    // 无论播放是通过点击触发还是被拒绝回退，都以 audio 的真实状态同步按钮文案，
-    // 避免出现“显示播放但其实在暂停”之类不一致的人为疏漏。
+    });
     audio.addEventListener('play', function () {
       musicToggleBtn.title = '暂停音乐';
       musicToggleBtn.setAttribute('aria-label', '暂停音乐');
@@ -486,24 +402,23 @@
       musicToggleBtn.setAttribute('aria-label', '播放音乐');
     });
 
-    // 统一外链入口：调用方只负责传入原 URL，地址本身不做任何改写。
-    function openLink(url) {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-
-    /* ========== 莲花：随机呼出 📖 / 📽️ / 🎙️，再次点击像流星一样飞散消失 ========== */
+    /* ========== 莲花中心：呼出/收回星空图标 ========== */
+    const SKY_ICONS = [
+      { emoji: '📖', url: 'https://totp99.github.io/PDF-book-reader/', label: 'PDF 电子书阅读器' },
+      { emoji: '📽️', url: 'https://totp99.github.io/Mp4-player/', label: '视频播放器' },
+      { emoji: '🎙️', url: 'https://totp99.github.io/Mp3-player/', label: '录音/播客' },
+      { emoji: '📻', url: 'https://totp99.github.io/Radio/', label: '广播电台' }
+    ];
     let skyIconsVisible = false;
 
-    // 在图标按钮内散布几颗 ✨ 小星星，随机位置与动画延迟，实现星光闪烁效果
     function addSparkles(btn) {
-      const count = 4 + Math.floor(Math.random() * 2); // 4~5 颗
+      const count = 4 + Math.floor(Math.random() * 2);
       for (let i = 0; i < count; i++) {
         const s = document.createElement('span');
         s.className = 'sky-sparkle';
         s.textContent = '✨';
-        // 围绕图标本体，在其周边环形范围内随机撒开
         const angle = Math.random() * Math.PI * 2;
-        const radius = 14 + Math.random() * 16; // px
+        const radius = 14 + Math.random() * 16;
         s.style.left = 'calc(50% + ' + (Math.cos(angle) * radius) + 'px)';
         s.style.top = 'calc(50% + ' + (Math.sin(angle) * radius) + 'px)';
         s.style.animationDelay = (Math.random() * 1.6).toFixed(2) + 's';
@@ -513,32 +428,25 @@
     }
 
     function spawnSkyIcons() {
+      playClick();
       if (skyIconsVisible) {
         hideSkyIcons();
         return;
       }
-      // 防御性清理：若上一轮的淡出动画尚未结束（快速连续点击莲花），
-      // 先移除残留节点，避免新旧图标同时出现在画面上。
       document.querySelectorAll('.sky-icon').forEach(function (el) { el.remove(); });
 
-      const icons = [
-        { emoji: '📖', url: 'https://totp99.github.io/PDF-book-reader-/', label: 'PDF 电子书阅读器' },
-        { emoji: '📽️', url: 'https://totp99.github.io/mp4-player/', label: '视频播放器' },
-        { emoji: '🎙️', url: 'https://totp99.github.io/mp3/', label: '录音/播客' }
-      ];
-      // 屏幕划出三个互不重叠的区间，三个图标随机打乱分配到各区间。
       const zones = [
-        { xMin: 5,  xMax: 28 },
-        { xMin: 36, xMax: 60 },
-        { xMin: 68, xMax: 92 }
+        { xMin: 4,  xMax: 22 },
+        { xMin: 28, xMax: 46 },
+        { xMin: 52, xMax: 70 },
+        { xMin: 76, xMax: 94 }
       ];
-      // Fisher-Yates 打乱区间顺序
       for (let i = zones.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         const tmp = zones[i]; zones[i] = zones[j]; zones[j] = tmp;
       }
 
-      icons.forEach(function (icon, i) {
+      SKY_ICONS.forEach(function (icon, i) {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'sky-icon';
@@ -546,24 +454,19 @@
         btn.title = icon.label;
         btn.setAttribute('aria-label', icon.label);
         const zone = zones[i];
-        const left = zone.xMin + Math.random() * (zone.xMax - zone.xMin);
-        const top = 2 + Math.random() * 14; // 头像上方的星空区域
-        btn.style.left = left + '%';
-        btn.style.top = top + '%';
+        btn.style.left = (zone.xMin + Math.random() * (zone.xMax - zone.xMin)) + '%';
+        btn.style.top = (2 + Math.random() * 14) + '%';
 
-        // 消失时的流星飞出方向：随机角度、随机距离，并计算光尾应指向的反方向角度
         const flyAngle = Math.random() * Math.PI * 2;
         const flyDist = 90 + Math.random() * 70;
         const mx = Math.cos(flyAngle) * flyDist;
         const my = Math.sin(flyAngle) * flyDist;
         btn.style.setProperty('--mx', mx.toFixed(1) + 'px');
         btn.style.setProperty('--my', my.toFixed(1) + 'px');
-        const tailDeg = (Math.atan2(my, mx) * 180 / Math.PI) + 180;
-        btn.style.setProperty('--mrot', tailDeg.toFixed(1) + 'deg');
+        btn.style.setProperty('--mrot', ((Math.atan2(my, mx) * 180 / Math.PI) + 180).toFixed(1) + 'deg');
 
         addSparkles(btn);
-
-        btn.onclick = function () { openLink(icon.url); };
+        btn.addEventListener('click', function () { openLink(icon.url); });
         document.body.appendChild(btn);
       });
       skyIconsVisible = true;
@@ -572,60 +475,70 @@
     function hideSkyIcons() {
       const els = document.querySelectorAll('.sky-icon');
       els.forEach(function (el) { el.classList.add('sky-icon-hide'); });
-      // 等流星飞出+拖尾淡出的动画（0.6s，见 CSS .sky-icon-hide / meteorFly）播完再真正移除节点。
       setTimeout(function () {
         els.forEach(function (el) { el.remove(); });
       }, 620);
       skyIconsVisible = false;
     }
 
-    /* ========== 观音图保护：禁止右键另存 / 拖拽 / 常见保存快捷键 ========== */
+    document.getElementById('lotus-center').addEventListener('click', spawnSkyIcons);
+
+    /* ========== 横竖屏切换动画 ========== */
+    (function orientAnim() {
+      const container = document.getElementById('main-container');
+      let lastOrient = window.matchMedia('(orientation: landscape)').matches ? 'landscape' : 'portrait';
+      let timer = null;
+
+      function onOrientChange() {
+        const now = window.matchMedia('(orientation: landscape)').matches ? 'landscape' : 'portrait';
+        if (now === lastOrient) return;
+        lastOrient = now;
+        container.classList.add('orient-fade');
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          container.classList.remove('orient-fade');
+          if (skyIconsVisible) hideSkyIcons();
+        }, 280);
+      }
+
+      window.addEventListener('orientationchange', onOrientChange, { passive: true });
+      window.matchMedia('(orientation: landscape)').addEventListener('change', onOrientChange);
+    })();
+
+    /* ========== 观音图保护 ========== */
     (function protectGuanyin() {
-      // 禁止右键菜单（整页，重点保护观音区域）
       document.addEventListener('contextmenu', function (e) {
         if (e.target.closest('.guanyin-wrapper') || e.target.tagName === 'IMG') {
           e.preventDefault();
-          return false;
         }
       }, true);
-
-      // 禁止拖拽图片
       document.addEventListener('dragstart', function (e) {
         if (e.target.tagName === 'IMG' || e.target.closest('.guanyin-wrapper')) {
           e.preventDefault();
-          return false;
         }
       }, true);
-
-      // 禁止常见保存/复制快捷键（Ctrl/Cmd + S / C / U / P 等）
       document.addEventListener('keydown', function (e) {
         const key = (e.key || '').toLowerCase();
         const ctrl = e.ctrlKey || e.metaKey;
         if (ctrl && ['s', 'c', 'u', 'p', 'a'].includes(key)) {
-          // 允许在输入框中复制，其余情况拦截
           if (!/^(INPUT|TEXTAREA)$/i.test(e.target.tagName) && !e.target.isContentEditable) {
             e.preventDefault();
-            return false;
           }
         }
-        // F12 / Ctrl+Shift+I 等开发者工具（轻度拦截，无法真正阻止）
         if (e.key === 'F12' || (ctrl && e.shiftKey && ['i', 'j', 'c'].includes(key))) {
           e.preventDefault();
-          return false;
         }
       }, true);
-
-      // 给观音图设置 draggable=false，并单独拦截其右键菜单
       document.querySelectorAll('.guanyin-wrapper img').forEach(function (img) {
         img.setAttribute('draggable', 'false');
         img.addEventListener('contextmenu', function (e) { e.preventDefault(); });
       });
     })();
 
-    /* ========== 星空背景：星星 + 流星 canvas 动画 ========== */
+    /* ========== 星空背景 ========== */
     const canvas = document.getElementById('stars');
     const ctx = canvas.getContext('2d');
-    let stars=[], meteors=[], w, h;
+    let stars = [], meteors = [], w, h;
     const colors = ['255,255,255','200,220,255','180,200,255','255,240,220','255,230,180','220,200,255','180,240,255','255,210,210'];
 
     function resize() {
@@ -634,59 +547,104 @@
       createStars();
     }
     function createStars() {
-      const count = Math.floor((w*h)/1800);
+      const count = Math.floor((w * h) / 1800);
       stars = [];
-      for (let i=0;i<count;i++) {
-        const size=Math.random();
-        let radius,baseAlpha,twinkleSpeed;
-        if(size<0.7){radius=Math.random()*1.1+0.3;baseAlpha=Math.random()*0.45+0.25;twinkleSpeed=Math.random()*0.025+0.008;}
-        else if(size<0.92){radius=Math.random()*1.4+1;baseAlpha=Math.random()*0.4+0.4;twinkleSpeed=Math.random()*0.02+0.01;}
-        else{radius=Math.random()*1.8+1.8;baseAlpha=Math.random()*0.3+0.55;twinkleSpeed=Math.random()*0.015+0.012;}
-        stars.push({x:Math.random()*w,y:Math.random()*h,radius,color:colors[Math.floor(Math.random()*colors.length)],baseAlpha,twinkleSpeed,phase:Math.random()*Math.PI*2,deepTwinkle:Math.random()<0.45,hasSpike:Math.random()<0.07});
+      for (let i = 0; i < count; i++) {
+        const size = Math.random();
+        let radius, baseAlpha, twinkleSpeed;
+        if (size < 0.7) {
+          radius = Math.random() * 1.1 + 0.3;
+          baseAlpha = Math.random() * 0.45 + 0.25;
+          twinkleSpeed = Math.random() * 0.025 + 0.008;
+        } else if (size < 0.92) {
+          radius = Math.random() * 1.4 + 1;
+          baseAlpha = Math.random() * 0.4 + 0.4;
+          twinkleSpeed = Math.random() * 0.02 + 0.01;
+        } else {
+          radius = Math.random() * 1.8 + 1.8;
+          baseAlpha = Math.random() * 0.3 + 0.55;
+          twinkleSpeed = Math.random() * 0.015 + 0.012;
+        }
+        stars.push({
+          x: Math.random() * w, y: Math.random() * h, radius,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          baseAlpha, twinkleSpeed, phase: Math.random() * Math.PI * 2,
+          deepTwinkle: Math.random() < 0.45, hasSpike: Math.random() < 0.07
+        });
       }
     }
     function createMeteor() {
-      const zone=Math.random()<0.55?0:1;
-      let x,y,angle,speed;
-      if(zone===0){x=Math.random()*w*0.85;y=-30-Math.random()*40;angle=Math.PI/5+(Math.random()-0.5)*0.4;speed=Math.random()*5+7;}
-      else{x=-40+Math.random()*(w*0.3);y=h*0.78+Math.random()*(h*0.2);angle=Math.PI/6+(Math.random()-0.3)*0.35;speed=Math.random()*5+6.5;}
-      meteors.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,len:Math.random()*70+50,alpha:1,life:1,decay:Math.random()*0.009+0.007,color:Math.random()>0.7?'255,230,180':'220,235,255',zone});
+      const zone = Math.random() < 0.55 ? 0 : 1;
+      let x, y, angle, speed;
+      if (zone === 0) {
+        x = Math.random() * w * 0.85; y = -30 - Math.random() * 40;
+        angle = Math.PI / 5 + (Math.random() - 0.5) * 0.4;
+        speed = Math.random() * 5 + 7;
+      } else {
+        x = -40 + Math.random() * (w * 0.3); y = h * 0.78 + Math.random() * (h * 0.2);
+        angle = Math.PI / 6 + (Math.random() - 0.3) * 0.35;
+        speed = Math.random() * 5 + 6.5;
+      }
+      meteors.push({
+        x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+        len: Math.random() * 70 + 50, alpha: 1, life: 1,
+        decay: Math.random() * 0.009 + 0.007,
+        color: Math.random() > 0.7 ? '255,230,180' : '220,235,255', zone
+      });
     }
     function drawStars() {
-      ctx.clearRect(0,0,w,h);
-      for(const s of stars){
-        s.phase+=s.twinkleSpeed;
-        let twinkle=s.deepTwinkle?Math.pow(0.5+0.5*Math.sin(s.phase),2.2):Math.max(0.05,0.35+0.65*Math.sin(s.phase));
-        const alpha=s.baseAlpha*twinkle;
-        if(alpha<0.03)continue;
-        ctx.beginPath();ctx.arc(s.x,s.y,s.radius,0,Math.PI*2);
-        ctx.fillStyle=`rgba(${s.color},${alpha})`;ctx.fill();
-        if(s.radius>1.6&&alpha>0.3){ctx.beginPath();ctx.arc(s.x,s.y,s.radius*2,0,Math.PI*2);ctx.fillStyle=`rgba(${s.color},${alpha*0.12})`;ctx.fill();}
-        if(s.hasSpike&&alpha>0.55){const len=s.radius*3.2;ctx.strokeStyle=`rgba(${s.color},${alpha*0.3})`;ctx.lineWidth=0.55;ctx.beginPath();ctx.moveTo(s.x-len,s.y);ctx.lineTo(s.x+len,s.y);ctx.moveTo(s.x,s.y-len);ctx.lineTo(s.x,s.y+len);ctx.stroke();}
+      ctx.clearRect(0, 0, w, h);
+      for (const s of stars) {
+        s.phase += s.twinkleSpeed;
+        const twinkle = s.deepTwinkle
+          ? Math.pow(0.5 + 0.5 * Math.sin(s.phase), 2.2)
+          : Math.max(0.05, 0.35 + 0.65 * Math.sin(s.phase));
+        const alpha = s.baseAlpha * twinkle;
+        if (alpha < 0.03) continue;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(' + s.color + ',' + alpha + ')';
+        ctx.fill();
+        if (s.radius > 1.6 && alpha > 0.3) {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.radius * 2, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(' + s.color + ',' + (alpha * 0.12) + ')';
+          ctx.fill();
+        }
+        if (s.hasSpike && alpha > 0.55) {
+          const len = s.radius * 3.2;
+          ctx.strokeStyle = 'rgba(' + s.color + ',' + (alpha * 0.3) + ')';
+          ctx.lineWidth = 0.55;
+          ctx.beginPath();
+          ctx.moveTo(s.x - len, s.y); ctx.lineTo(s.x + len, s.y);
+          ctx.moveTo(s.x, s.y - len); ctx.lineTo(s.x, s.y + len);
+          ctx.stroke();
+        }
       }
-      for(let i=meteors.length-1;i>=0;i--){
-        const m=meteors[i];
-        m.x+=m.vx;m.y+=m.vy;m.life-=m.decay;m.alpha=Math.max(0,m.life);
-        if(m.zone===0&&m.y>h*0.18+30)m.life-=0.04;
-        if(m.zone===1&&m.y<h*0.78-20)m.life-=0.04;
-        if(m.life<=0||m.x>w+120||m.y>h+80||m.y<-80){meteors.splice(i,1);continue;}
-        const tx=m.x-m.vx*(m.len/12),ty=m.y-m.vy*(m.len/12);
-        const g=ctx.createLinearGradient(m.x,m.y,tx,ty);
-        g.addColorStop(0,`rgba(${m.color},${m.alpha})`);
-        g.addColorStop(0.3,`rgba(${m.color},${m.alpha*0.45})`);
-        g.addColorStop(1,`rgba(${m.color},0)`);
-        ctx.beginPath();ctx.moveTo(m.x,m.y);ctx.lineTo(tx,ty);
-        ctx.strokeStyle=g;ctx.lineWidth=2;ctx.lineCap='round';ctx.stroke();
-        ctx.beginPath();ctx.arc(m.x,m.y,1.6,0,Math.PI*2);
-        ctx.fillStyle=`rgba(255,255,255,${m.alpha})`;ctx.fill();
+      for (let i = meteors.length - 1; i >= 0; i--) {
+        const m = meteors[i];
+        m.x += m.vx; m.y += m.vy; m.life -= m.decay; m.alpha = Math.max(0, m.life);
+        if (m.zone === 0 && m.y > h * 0.18 + 30) m.life -= 0.04;
+        if (m.zone === 1 && m.y < h * 0.78 - 20) m.life -= 0.04;
+        if (m.life <= 0 || m.x > w + 120 || m.y > h + 80 || m.y < -80) {
+          meteors.splice(i, 1); continue;
+        }
+        const tx = m.x - m.vx * (m.len / 12), ty = m.y - m.vy * (m.len / 12);
+        const g = ctx.createLinearGradient(m.x, m.y, tx, ty);
+        g.addColorStop(0, 'rgba(' + m.color + ',' + m.alpha + ')');
+        g.addColorStop(0.3, 'rgba(' + m.color + ',' + (m.alpha * 0.45) + ')');
+        g.addColorStop(1, 'rgba(' + m.color + ',0)');
+        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(tx, ty);
+        ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.stroke();
+        ctx.beginPath(); ctx.arc(m.x, m.y, 1.6, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,' + m.alpha + ')'; ctx.fill();
       }
-      if(Math.random()<0.004)createMeteor();
+      if (Math.random() < 0.004) createMeteor();
       requestAnimationFrame(drawStars);
     }
-    // 尺寸变化与横竖屏旋转都重新计算画布；CSS 的 orientation 媒体查询负责布局切换。
+
     window.addEventListener('resize', resize, { passive: true });
     window.addEventListener('orientationchange', resize, { passive: true });
-
     resize();
     drawStars();
   </script>
