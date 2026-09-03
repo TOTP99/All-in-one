@@ -203,12 +203,13 @@
     @media (orientation: landscape) {
       .container {
         --pad-x: 1.5vw;
-        --gap-x: 1.6vw;
-        --grid-gap: 0.6vh;
+        --gap-x: 1.4vw;
+        --grid-gap: 0.5vh;
         --avail-w: calc(100vw - 2 * var(--pad-x) - 2 * var(--gap-x));
-        --g-w: min(calc(var(--avail-w) * 0.46), 44vh, 360px);
+        --g-w: min(calc(var(--avail-w) * 0.48), 48vh, 380px);
         --side-w: calc((var(--avail-w) - var(--g-w)) / 2);
-        --cell: min(var(--side-w), calc((100vh - var(--grid-gap) - 2vh) / 2), 110px);
+        /* 右侧 3 行：高度按 /3 分配；上限 78px（原 110 的约 70%） */
+        --cell: min(var(--side-w), calc((100vh - 2 * var(--grid-gap) - 2vh) / 3), 78px);
 
         flex-direction: row;
         justify-content: center;
@@ -248,7 +249,11 @@
         max-height: 96vh;
       }
       .landscape-grid.left { order: 1; }
-      .landscape-grid.right { order: 3; }
+      .landscape-grid.right {
+        order: 3;
+        grid-template-rows: 1fr 1fr 1fr;
+        height: calc(var(--cell) * 3 + 2 * var(--grid-gap));
+      }
 
       .grid-cell {
         width: var(--cell);
@@ -263,7 +268,7 @@
         transition: border-color 0.25s, box-shadow 0.25s, transform 0.12s, background 0.25s;
         user-select: none; -webkit-user-select: none;
         -webkit-touch-callout: none;
-        font-size: clamp(28px, calc(var(--cell) * 0.42), 48px);
+        font-size: clamp(20px, calc(var(--cell) * 0.40), 34px);
         line-height: 1;
         filter: drop-shadow(0 0 4px rgba(255, 230, 160, 0.35));
       }
@@ -277,10 +282,10 @@
 
     @media (orientation: landscape) and (max-height: 420px) {
       .container {
-        --g-w: min(calc(var(--avail-w) * 0.4), 68vh, 260px);
-        --cell: min(var(--side-w), calc((100vh - var(--grid-gap) - 1vh) / 2), 88px);
+        --g-w: min(calc(var(--avail-w) * 0.42), 70vh, 280px);
+        --cell: min(var(--side-w), calc((100vh - 2 * var(--grid-gap) - 1vh) / 3), 58px);
         --gap-x: 1.2vw;
-        --grid-gap: 0.5vh;
+        --grid-gap: 0.4vh;
       }
     }
   </style>
@@ -311,14 +316,16 @@
 
     <!-- 横屏右侧田字格：📖 🎙️ 📽️ 📻 -->
     <div class="landscape-grid right">
+      <button type="button" class="grid-cell" title="广播电台" aria-label="广播电台"
+              data-url="https://totp99.github.io/Radio/">📻</button>
+      <button type="button" class="grid-cell" title="超市特价" aria-label="超市特价"
+              data-url="https://totp99.github.io/Best-prices/">🏷️</button>
       <button type="button" class="grid-cell" title="PDF 电子书阅读器" aria-label="PDF 电子书阅读器"
               data-url="https://totp99.github.io/PDF-book-reader/">📖</button>
       <button type="button" class="grid-cell" title="录音/播客" aria-label="录音/播客"
               data-url="https://totp99.github.io/Mp3-player/">🎙️</button>
       <button type="button" class="grid-cell" title="视频播放器" aria-label="视频播放器"
               data-url="https://totp99.github.io/Mp4-player/">📽️</button>
-      <button type="button" class="grid-cell" title="广播电台" aria-label="广播电台"
-              data-url="https://totp99.github.io/Radio/">📻</button>
     </div>
 
     <!-- 竖屏宝座（横屏隐藏） -->
@@ -404,10 +411,11 @@
 
     /* ========== 莲花中心：呼出/收回星空图标 ========== */
     const SKY_ICONS = [
+      { emoji: '🏷️', url: 'https://totp99.github.io/Best-prices/', label: '超市特价' },
+      { emoji: '📻', url: 'https://totp99.github.io/Radio/', label: '广播电台' },
       { emoji: '📖', url: 'https://totp99.github.io/PDF-book-reader/', label: 'PDF 电子书阅读器' },
-      { emoji: '📽️', url: 'https://totp99.github.io/Mp4-player/', label: '视频播放器' },
       { emoji: '🎙️', url: 'https://totp99.github.io/Mp3-player/', label: '录音/播客' },
-      { emoji: '📻', url: 'https://totp99.github.io/Radio/', label: '广播电台' }
+      { emoji: '📽️', url: 'https://totp99.github.io/Mp4-player/', label: '视频播放器' }
     ];
     let skyIconsVisible = false;
 
@@ -436,10 +444,11 @@
       document.querySelectorAll('.sky-icon').forEach(function (el) { el.remove(); });
 
       const zones = [
-        { xMin: 4,  xMax: 22 },
-        { xMin: 28, xMax: 46 },
-        { xMin: 52, xMax: 70 },
-        { xMin: 76, xMax: 94 }
+        { xMin: 2,  xMax: 18 },
+        { xMin: 20, xMax: 36 },
+        { xMin: 38, xMax: 54 },
+        { xMin: 56, xMax: 72 },
+        { xMin: 74, xMax: 94 }
       ];
       for (let i = zones.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
