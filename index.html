@@ -353,11 +353,26 @@
   </div>
 
   <audio id="bgm" src="Heart Sutra.mp3" loop preload="auto"></audio>
+  <audio id="audioUnlock" preload="auto" style="display:none" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="></audio>
 
   <script>
+    /* ========== iOS静音开关解锁 ========== */
+    // AudioContext合成音效会被iOS物理静音开关屏蔽，原生<audio>标签走不同的音频会话通道不受影响；
+    // 首次用户手势时播放一次无声<audio>可以把会话切到"播放"类别，之后Web Audio的点击音效也能绕开静音开关。
+    // 注意：即使有#bgm这个真实<audio>，也不能保证一定生效——用户可能从没点开背景音乐，
+    // 所以点击音效仍需要自己这份独立的解锁保底。
+    let audioUnlocked = false;
+    function unlockAudioSession() {
+      if (audioUnlocked) return;
+      audioUnlocked = true;
+      const el = document.getElementById('audioUnlock');
+      if (el) el.play().catch(function () {});
+    }
+
     /* ========== 点击音效（Web Audio，无外部文件） ========== */
     let audioCtx = null;
     function playClick() {
+      unlockAudioSession();
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') audioCtx.resume();
