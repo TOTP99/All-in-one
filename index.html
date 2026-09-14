@@ -37,7 +37,7 @@
     .guanyin-wrapper img {
       width: 100%; height: auto; display: block;
       user-select: none; -webkit-user-select: none;
-      -webkit-user-drag: none; user-drag: none;
+      -webkit-user-drag: none;
       pointer-events: none; -webkit-touch-callout: none;
     }
     .guanyin-protect {
@@ -297,13 +297,13 @@
     <!-- 横屏左侧田字格：🎰 🔮 🎲 🎹 -->
     <div class="landscape-grid left">
       <button type="button" class="grid-cell" title="老虎机" aria-label="老虎机"
-              data-url="https://totp99.github.io/Slots-machine/">🎰</button>
+              data-app="slot">🎰</button>
       <button type="button" class="grid-cell" title="掷茭" aria-label="掷茭"
-              data-url="https://totp99.github.io/Zhi-Jiao/">🔮</button>
+              data-app="zjiao">🔮</button>
       <button type="button" class="grid-cell" title="麻将" aria-label="麻将"
-              data-url="https://totp99.github.io/Mahjong/">🎲</button>
+              data-app="mahjong">🎲</button>
       <button type="button" class="grid-cell" title="钢琴" aria-label="钢琴"
-              data-url="https://totp99.github.io/Piano/">🎹</button>
+              data-app="piano">🎹</button>
     </div>
 
     <!-- 观音 -->
@@ -317,17 +317,17 @@
     <!-- 横屏右侧田字格：📖 🎙️ 📽️ 📻 -->
     <div class="landscape-grid right">
       <button type="button" class="grid-cell" title="广播电台" aria-label="广播电台"
-              data-url="https://totp99.github.io/Radio/">📻</button>
+              data-app="radio">📻</button>
       <button type="button" class="grid-cell" title="超市特价" aria-label="超市特价"
-              data-url="https://totp99.github.io/Best-prices/">🏷️</button>
+              data-app="prices">🏷️</button>
       <button type="button" class="grid-cell" title="PDF 电子书阅读器" aria-label="PDF 电子书阅读器"
-              data-url="https://totp99.github.io/PDF-book-reader/">📖</button>
+              data-app="pdf">📖</button>
       <button type="button" class="grid-cell" title="录音/播客" aria-label="录音/播客"
-              data-url="https://totp99.github.io/Mp3-player/">🎙️</button>
+              data-app="audio">🎙️</button>
       <button type="button" class="grid-cell" title="视频播放器" aria-label="视频播放器"
-              data-url="https://totp99.github.io/Mp4-player/">📽️</button>
+              data-app="video">📽️</button>
       <button type="button" class="grid-cell" title="智能戒指" aria-label="智能戒指"
-              data-url="https://totp99.github.io/tk5-health/">💍</button>
+              data-app="ring">💍</button>
     </div>
 
     <!-- 竖屏宝座（横屏隐藏） -->
@@ -345,10 +345,10 @@
       </div>
       <div class="lotus-wrapper">
         <img src="lotus.webp" alt="莲花菜单">
-        <div class="hotspot hot-piano"   title="钢琴"   data-url="https://totp99.github.io/Piano/"></div>
-        <div class="hotspot hot-zjiao"   title="掷茭"   data-url="https://totp99.github.io/Zhi-Jiao/"></div>
-        <div class="hotspot hot-mahjong" title="麻将"   data-url="https://totp99.github.io/Mahjong/"></div>
-        <div class="hotspot hot-slot"    title="老虎机" data-url="https://totp99.github.io/Slots-machine/"></div>
+        <div class="hotspot hot-piano"   title="钢琴"   data-app="piano"></div>
+        <div class="hotspot hot-zjiao"   title="掷茭"   data-app="zjiao"></div>
+        <div class="hotspot hot-mahjong" title="麻将"   data-app="mahjong"></div>
+        <div class="hotspot hot-slot"    title="老虎机" data-app="slot"></div>
         <div class="hotspot hot-lotus"   title="呼出播放器/阅读器" id="lotus-center"></div>
       </div>
     </div>
@@ -393,16 +393,30 @@
       } catch (_) {}
     }
 
-    /* ========== 统一外链 ========== */
+    /* ========== 统一外链（一处维护，热点 / 田字格 / 星空图标共用） ========== */
+    const LINKS = {
+      piano:  'https://totp99.github.io/Piano/',
+      zjiao:  'https://totp99.github.io/Zhi-Jiao/',
+      mahjong:'https://totp99.github.io/Mahjong/',
+      slot:   'https://totp99.github.io/Slots-machine/',
+      pdf:    'https://totp99.github.io/PDF-book-reader/',
+      audio:  'https://totp99.github.io/Mp3-player/',
+      video:  'https://totp99.github.io/Mp4-player/',
+      radio:  'https://totp99.github.io/Radio/',
+      prices: 'https://totp99.github.io/Best-prices/',
+      ring:   'https://totp99.github.io/tk5-health/'
+    };
+
     function openLink(url) {
       playClick();
       window.open(url, '_blank', 'noopener,noreferrer');
     }
 
-    /* ========== 绑定 data-url 点击 ========== */
-    document.querySelectorAll('[data-url]').forEach(function (el) {
+    /* ========== 绑定 data-app 点击 ========== */
+    document.querySelectorAll('[data-app]').forEach(function (el) {
       el.addEventListener('click', function () {
-        openLink(el.getAttribute('data-url'));
+        const url = LINKS[el.getAttribute('data-app')];
+        if (url) openLink(url);
       });
     });
 
@@ -428,11 +442,11 @@
 
     /* ========== 莲花中心：呼出/收回星空图标 ========== */
     const SKY_ICONS = [
-      { emoji: '🏷️', url: 'https://totp99.github.io/Best-prices/', label: '超市特价' },
-      { emoji: '📻', url: 'https://totp99.github.io/Radio/', label: '广播电台' },
-      { emoji: '📖', url: 'https://totp99.github.io/PDF-book-reader/', label: 'PDF 电子书阅读器' },
-      { emoji: '🎙️', url: 'https://totp99.github.io/Mp3-player/', label: '录音/播客' },
-      { emoji: '📽️', url: 'https://totp99.github.io/Mp4-player/', label: '视频播放器' }
+      { emoji: '🏷️', app: 'prices', label: '超市特价' },
+      { emoji: '📻', app: 'radio',  label: '广播电台' },
+      { emoji: '📖', app: 'pdf',    label: 'PDF 电子书阅读器' },
+      { emoji: '🎙️', app: 'audio',  label: '录音/播客' },
+      { emoji: '📽️', app: 'video',  label: '视频播放器' }
     ];
     let skyIconsVisible = false;
 
@@ -492,7 +506,7 @@
         btn.style.setProperty('--mrot', ((Math.atan2(my, mx) * 180 / Math.PI) + 180).toFixed(1) + 'deg');
 
         addSparkles(btn);
-        btn.addEventListener('click', function () { openLink(icon.url); });
+        btn.addEventListener('click', function () { openLink(LINKS[icon.app]); });
         document.body.appendChild(btn);
       });
       skyIconsVisible = true;
