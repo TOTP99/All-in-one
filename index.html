@@ -449,11 +449,13 @@
 
     /* ========== 莲花中心：呼出/收回星空图标 ========== */
     const SKY_ICONS = [
-      { emoji: '🏷️', app: 'prices', label: '超市特价' },
-      { emoji: '📻', app: 'radio',  label: '广播电台' },
-      { emoji: '📖', app: 'pdf',    label: 'PDF 电子书阅读器' },
-      { emoji: '🎙️', app: 'audio',  label: '录音/播客' },
-      { emoji: '📽️', app: 'video',  label: '视频播放器' }
+      { emoji: '🏷️', app: 'prices',  label: '超市特价' },
+      { emoji: '📻', app: 'radio',   label: '广播电台' },
+      { emoji: '📖', app: 'pdf',     label: 'PDF 电子书阅读器' },
+      { emoji: '🎙️', app: 'audio',   label: '录音/播客' },
+      { emoji: '📽️', app: 'video',   label: '视频播放器' },
+      { emoji: '💍', app: 'ring',    label: '智能戒指' },
+      { emoji: '🐢', app: 'fishtank', label: '大鱼缸' }
     ];
     let skyIconsVisible = false;
 
@@ -482,11 +484,13 @@
       document.querySelectorAll('.sky-icon').forEach(function (el) { el.remove(); });
 
       const zones = [
-        { xMin: 2,  xMax: 18 },
-        { xMin: 20, xMax: 36 },
-        { xMin: 38, xMax: 54 },
-        { xMin: 56, xMax: 72 },
-        { xMin: 74, xMax: 94 }
+        { xMin: 2,  xMax: 15 },
+        { xMin: 15, xMax: 28 },
+        { xMin: 28, xMax: 41 },
+        { xMin: 41, xMax: 55 },
+        { xMin: 55, xMax: 68 },
+        { xMin: 68, xMax: 81 },
+        { xMin: 81, xMax: 94 }
       ];
       for (let i = zones.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
