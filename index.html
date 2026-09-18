@@ -298,7 +298,7 @@
   <canvas id="stars"></canvas>
 
   <div class="container" id="main-container">
-    <!-- 横屏左侧田字格：🎰 🔮 🎲 🎹 🐢 -->
+    <!-- 横屏左侧田字格：🎰 🔮 🎲 🎹 🐢 🥁 -->
     <div class="landscape-grid left">
       <button type="button" class="grid-cell" title="老虎机" aria-label="老虎机"
               data-app="slot">🎰</button>
@@ -310,6 +310,8 @@
               data-app="piano">🎹</button>
       <button type="button" class="grid-cell" title="大鱼缸" aria-label="大鱼缸"
               data-app="fishtank">🐢</button>
+      <button type="button" class="grid-cell" title="打击乐合成器" aria-label="打击乐合成器"
+              data-app="perc">🥁</button>
     </div>
 
     <!-- 观音 -->
@@ -411,7 +413,8 @@
       radio:  'https://totp99.github.io/Radio/',
       prices: 'https://totp99.github.io/Best-prices/',
       ring:   'https://totp99.github.io/tk5-health/',
-      fishtank: 'https://totp99.github.io/fish-tank-/'
+      fishtank: 'https://totp99.github.io/fish-tank/',
+      perc:   'https://totp99.github.io/perc-synth/'
     };
 
     function openLink(url) {
@@ -455,7 +458,8 @@
       { emoji: '🎙️', app: 'audio',   label: '录音/播客' },
       { emoji: '📽️', app: 'video',   label: '视频播放器' },
       { emoji: '💍', app: 'ring',    label: '智能戒指' },
-      { emoji: '🐢', app: 'fishtank', label: '大鱼缸' }
+      { emoji: '🐢', app: 'fishtank', label: '大鱼缸' },
+      { emoji: '🥁', app: 'perc',    label: '打击乐合成器' }
     ];
     let skyIconsVisible = false;
 
@@ -484,13 +488,14 @@
       document.querySelectorAll('.sky-icon').forEach(function (el) { el.remove(); });
 
       const zones = [
-        { xMin: 2,  xMax: 15 },
-        { xMin: 15, xMax: 28 },
-        { xMin: 28, xMax: 41 },
-        { xMin: 41, xMax: 55 },
-        { xMin: 55, xMax: 68 },
-        { xMin: 68, xMax: 81 },
-        { xMin: 81, xMax: 94 }
+        { xMin: 2,  xMax: 13.5 },
+        { xMin: 13.5, xMax: 25 },
+        { xMin: 25, xMax: 36.5 },
+        { xMin: 36.5, xMax: 48 },
+        { xMin: 48, xMax: 59.5 },
+        { xMin: 59.5, xMax: 71 },
+        { xMin: 71, xMax: 82.5 },
+        { xMin: 82.5, xMax: 94 }
       ];
       for (let i = zones.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
