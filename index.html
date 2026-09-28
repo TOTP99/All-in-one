@@ -145,19 +145,19 @@
       filter: drop-shadow(0 0 4px rgba(255, 210, 120, 0.45))
               drop-shadow(0 0 12px rgba(255, 190, 80, 0.25))
               drop-shadow(0 0 22px rgba(255, 170, 50, 0.12));
-      animation: mandalaSpin 60s linear infinite;
+      animation: mandalaSpin 24s linear infinite;
     }
-    .m1 { left: 0%;   width: 30%; height: 30%; bottom: -4%; z-index: 8; animation-duration: 72s; animation-direction: reverse; }
-    .m2 { left: 11%;  width: 22%; height: 22%; bottom: 12%; z-index: 6; animation-duration: 55s; }
-    .m3 { left: 23%;  width: 16%; height: 16%; bottom: 24%; z-index: 4; animation-duration: 80s; animation-direction: reverse; }
-    .m4 { left: 33%;  width: 12%; height: 12%; bottom: 33%; z-index: 2; animation-duration: 48s; }
-    .m5 { right: 33%; width: 12%; height: 12%; bottom: 33%; z-index: 2; animation-duration: 52s; animation-direction: reverse; }
-    .m6 { right: 23%; width: 16%; height: 16%; bottom: 24%; z-index: 4; animation-duration: 75s; }
-    .m7 { right: 11%; width: 22%; height: 22%; bottom: 12%; z-index: 6; animation-duration: 58s; animation-direction: reverse; }
-    .m8 { right: 0%;  width: 30%; height: 30%; bottom: -4%; z-index: 8; animation-duration: 65s; }
+    .m1 { left: 0%;   width: 30%; height: 30%; bottom: -4%; z-index: 8; animation-duration: 29s; animation-direction: reverse; }
+    .m2 { left: 11%;  width: 22%; height: 22%; bottom: 12%; z-index: 6; animation-duration: 22s; }
+    .m3 { left: 23%;  width: 16%; height: 16%; bottom: 24%; z-index: 4; animation-duration: 32s; animation-direction: reverse; }
+    .m4 { left: 33%;  width: 12%; height: 12%; bottom: 33%; z-index: 2; animation-duration: 19s; }
+    .m5 { right: 33%; width: 12%; height: 12%; bottom: 33%; z-index: 2; animation-duration: 21s; animation-direction: reverse; }
+    .m6 { right: 23%; width: 16%; height: 16%; bottom: 24%; z-index: 4; animation-duration: 30s; }
+    .m7 { right: 11%; width: 22%; height: 22%; bottom: 12%; z-index: 6; animation-duration: 23s; animation-direction: reverse; }
+    .m8 { right: 0%;  width: 30%; height: 30%; bottom: -4%; z-index: 8; animation-duration: 26s; }
     .m9 {
       left: 50%; width: 20%; height: 20%; bottom: 6%; z-index: 5;
-      animation: mandalaSpinCenter 90s linear infinite; opacity: 0.75;
+      animation: mandalaSpinCenter 36s linear infinite; opacity: 0.75;
     }
 
     .lotus-wrapper {
@@ -322,7 +322,7 @@
               title="播放音乐" aria-label="播放音乐">✨</button>
     </div>
 
-    <!-- 横屏右侧田字格：📻 🏷️ 📖 🎙️ 📽️ -->
+    <!-- 横屏右侧田字格：📻 📖 🎙️ 📽️ 🀄️ -->
     <div class="landscape-grid right">
       <button type="button" class="grid-cell" title="广播电台" aria-label="广播电台"
               data-app="radio">📻</button>
@@ -332,6 +332,8 @@
               data-app="audio">🎙️</button>
       <button type="button" class="grid-cell" title="视频播放器" aria-label="视频播放器"
               data-app="video">📽️</button>
+      <button type="button" class="grid-cell" title="麻将 Pro" aria-label="麻将 Pro"
+              data-app="mjpro">🀄️</button>
     </div>
 
     <!-- 竖屏宝座（横屏隐藏） -->
@@ -408,7 +410,8 @@
       video:  'https://totp99.github.io/Mp4-player/',
       radio:  'https://totp99.github.io/Radio/',
       fishtank: 'https://totp99.github.io/fish-tank/',
-      perc:   'https://totp99.github.io/perc-synth/'
+      perc:   'https://totp99.github.io/perc-synth/',
+      mjpro:  'https://totp99.github.io/mj-pro/'
     };
 
     function openLink(url) {
@@ -451,7 +454,8 @@
       { emoji: '🎙️', app: 'audio',   label: '录音/播客' },
       { emoji: '📽️', app: 'video',   label: '视频播放器' },
       { emoji: '🐢', app: 'fishtank', label: '大鱼缸' },
-      { emoji: '🥁', app: 'perc',    label: '打击乐合成器' }
+      { emoji: '🥁', app: 'perc',    label: '打击乐合成器' },
+      { emoji: '🀄️', app: 'mjpro',   label: '麻将 Pro' }
     ];
     let skyIconsVisible = false;
 
