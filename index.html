@@ -322,7 +322,7 @@
               title="播放音乐" aria-label="播放音乐">✨</button>
     </div>
 
-    <!-- 横屏右侧田字格：📻 📖 🎙️ 📽️ 🀄️ -->
+    <!-- 横屏右侧田字格：📻 📖 🎙️ 📽️ 🀄️ 🏷️ -->
     <div class="landscape-grid right">
       <button type="button" class="grid-cell" title="广播电台" aria-label="广播电台"
               data-app="radio">📻</button>
@@ -334,6 +334,8 @@
               data-app="video">📽️</button>
       <button type="button" class="grid-cell" title="麻将 Pro" aria-label="麻将 Pro"
               data-app="mjpro">🀄️</button>
+      <button type="button" class="grid-cell" title="超市特价" aria-label="超市特价"
+              data-app="prices">🏷️</button>
     </div>
 
     <!-- 竖屏宝座（横屏隐藏） -->
@@ -411,7 +413,8 @@
       radio:  'https://totp99.github.io/Radio/',
       fishtank: 'https://totp99.github.io/fish-tank/',
       perc:   'https://totp99.github.io/perc-synth/',
-      mjpro:  'https://totp99.github.io/mj-pro/'
+      mjpro:  'https://totp99.github.io/mj-pro/',
+      prices: 'https://totp99.github.io/Best-prices/'
     };
 
     function openLink(url) {
@@ -455,7 +458,8 @@
       { emoji: '📽️', app: 'video',   label: '视频播放器' },
       { emoji: '🐢', app: 'fishtank', label: '大鱼缸' },
       { emoji: '🥁', app: 'perc',    label: '打击乐合成器' },
-      { emoji: '🀄️', app: 'mjpro',   label: '麻将 Pro' }
+      { emoji: '🀄️', app: 'mjpro',   label: '麻将 Pro' },
+      { emoji: '🏷️', app: 'prices',  label: '超市特价' }
     ];
     let skyIconsVisible = false;
 
@@ -484,13 +488,14 @@
       document.querySelectorAll('.sky-icon').forEach(function (el) { el.remove(); });
 
       const zones = [
-        { xMin: 2,  xMax: 15 },
-        { xMin: 15, xMax: 28 },
-        { xMin: 28, xMax: 41 },
-        { xMin: 41, xMax: 54 },
-        { xMin: 54, xMax: 67 },
-        { xMin: 67, xMax: 80 },
-        { xMin: 80, xMax: 94 }
+        { xMin: 2,  xMax: 13 },
+        { xMin: 13, xMax: 24 },
+        { xMin: 24, xMax: 35 },
+        { xMin: 35, xMax: 46 },
+        { xMin: 46, xMax: 57 },
+        { xMin: 57, xMax: 68 },
+        { xMin: 68, xMax: 79 },
+        { xMin: 79, xMax: 92 }
       ];
       for (let i = zones.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
