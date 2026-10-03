@@ -1,5 +1,5 @@
 /* 观音门户 Service Worker：离线缓存 */
-var CACHE = 'guanyin-v1';
+var CACHE = 'guanyin-v2';
 var ASSETS = [
   './',
   './index.html',
