@@ -28,6 +28,7 @@
     /* ========== 竖屏 ========== */
     .guanyin-wrapper {
       position: relative;
+      top: 6px; /* 观音像整体下移 6px（不影响 float 动画的 transform） */
       width: min(83vw, 414px);
       animation: float 6s ease-in-out infinite;
       z-index: 5;
@@ -224,6 +225,7 @@
       .throne-area { display: none !important; }
 
       .guanyin-wrapper {
+        top: 0; /* 横屏不下移 */
         width: var(--g-w);
         max-height: 92vh;
         order: 2;
